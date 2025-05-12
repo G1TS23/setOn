@@ -54,10 +54,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Note::class, mappedBy: 'editors')]
     private Collection $contributions;
 
+    /**
+     * @var Collection<int, Invitation>
+     */
+    #[ORM\OneToMany(targetEntity: Invitation::class, mappedBy: 'sender')]
+    private Collection $invitations;
+
+    /**
+     * @var Collection<int, Invitation>
+     */
+    #[ORM\OneToMany(targetEntity: Invitation::class, mappedBy: 'receiver', orphanRemoval: true)]
+    private Collection $requests;
+
     public function __construct()
     {
         $this->notes = new ArrayCollection();
         $this->contributions = new ArrayCollection();
+        $this->invitations = new ArrayCollection();
+        $this->requests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,11 +193,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeNote(Note $note): static
     {
-        if ($this->notes->removeElement($note)) {
+        if ($this->notes->removeElement($note) && $note->getOwner() === $this) {
             // set the owning side to null (unless already changed)
-            if ($note->getOwner() === $this) {
                 $note->setOwner(null);
-            }
         }
 
         return $this;
@@ -211,6 +223,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->contributions->removeElement($contribution)) {
             $contribution->removeEditor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invitation>
+     */
+    public function getInvitations(): Collection
+    {
+        return $this->invitations;
+    }
+
+    public function addInvitation(Invitation $invitation): static
+    {
+        if (!$this->invitations->contains($invitation)) {
+            $this->invitations->add($invitation);
+            $invitation->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvitation(Invitation $invitation): static
+    {
+        if ($this->invitations->removeElement($invitation) && $invitation->getSender() === $this) {
+            // set the owning side to null (unless already changed)
+                $invitation->setSender(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invitation>
+     */
+    public function getRequests(): Collection
+    {
+        return $this->requests;
+    }
+
+    public function addRequest(Invitation $request): static
+    {
+        if (!$this->requests->contains($request)) {
+            $this->requests->add($request);
+            $request->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRequest(Invitation $request): static
+    {
+        if ($this->requests->removeElement($request) && $request->getReceiver() === $this) {
+            // set the owning side to null (unless already changed)
+                $request->setReceiver(null);
         }
 
         return $this;
