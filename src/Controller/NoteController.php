@@ -30,6 +30,8 @@ final class NoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $note->setCreatedAt(new \DateTimeImmutable());
+            $note->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->persist($note);
             $entityManager->flush();
 
@@ -57,6 +59,7 @@ final class NoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $note->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
             return $this->redirectToRoute('app_note_index', [], Response::HTTP_SEE_OTHER);

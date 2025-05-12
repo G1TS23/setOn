@@ -16,20 +16,22 @@ class NoteType extends AbstractType
         $builder
             ->add('title')
             ->add('content')
-            ->add('createdAt', null, [
+            ->remove('createdAt', null, [
                 'widget' => 'single_text',
             ])
-            ->add('updatedAt', null, [
+            ->remove('updatedAt', null, [
                 'widget' => 'single_text',
             ])
             ->add('owner', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
             ])
             ->add('editors', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'multiple' => true,
+                'expanded' => true,
+                'label' => 'Liste des contributeurs'
             ])
         ;
     }
