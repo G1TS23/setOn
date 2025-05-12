@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/invitation')]
+#[Route('/admin/invitation')]
 final class InvitationController extends AbstractController
 {
     #[Route(name: 'app_invitation_index', methods: ['GET'])]
