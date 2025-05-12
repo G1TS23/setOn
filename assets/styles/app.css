@@ -1,3 +1,206 @@
-body {
-    background-color: skyblue;
+
+:root {
+    color-scheme: light dark;
+}
+
+*{
+    --nav-bg-color: light-dark(#F8F8F8, #202020);
+    --nav-light-text-color: light-dark(#929292, #9A9A9A);
+    --nav-dark-text-color: light-dark(#5B5B5B, #9A9A9A);
+    --nav-item-hover-color: light-dark(#F1F1F1, #2D2D2D);
+    --nav-item-active-color: light-dark(#D9D9D7, #272727);
+    --nav-button-hover-color: light-dark(#E4E4E4, #383838);
+    --note-backround-color: light-dark(#FFFFFF, #191919);
+    --note-text-color: light-dark(#323232, #D3D3D3);
+    --resizer-color: light-dark(#F1F1F1, #272727);
+    --resizer-active-color: light-dark(#D9D9D7, #2D2D2D);
+}
+
+body, h1, textarea {
+    font-family: 'Helvetica', sans-serif;
+    color: var(--note-text-color);
+    background-color: var(--note-backround-color);
+}
+
+form {
+    max-width: 400px;
+}
+
+table {
+    margin: auto;
+    border-radius: 1rem;
+}
+
+h1 {
+    font-weight: 900;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+
+}
+
+a {
+    text-decoration: none;
+}
+
+
+textarea, input {
+    resize: none;
+    border: none;
+    user-focus: none;
+    overflow-y: auto;
+    &:focus {
+        outline: none;
+    }
+}
+
+h1 textarea {
+    flex: 1;
+    width: 100%;
+    font-weight: 900;
+}
+
+.notes-section {
+    color: var(--nav-light-text-color);
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: .5rem;
+}
+
+.note-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: stretch;
+    height: 100vh;
+}
+
+.nav-left {
+    background-color: var(--nav-bg-color);
+    color: var(--nav-dark-text-color);
+    width: 250px;
+    min-width: 200px;
+    max-width: 50%;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+.resizer {
+    width: 4px;
+    height: 100vh;
+    background-color: var(--resizer-color);
+    cursor: col-resize;
+    transition: background-color 0.3s;
+}
+
+.resizer:hover, .resizer.active {
+    background-color: var(--resizer-active-color);
+}
+
+.note {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background-color: var(--note-backround-color);
+    color: var(--note-text-color);
+
+}
+
+.note-item{
+    padding: 0.2rem .5rem;
+    border-radius: .5rem;
+    color: var(--nav-dark-text-color);
+    &:hover{
+        background-color: var(--nav-item-hover-color);
+    }
+}
+
+.title {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.edit-icons {
+    color: var(--nav-light-text-color);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-icons .btn {
+    padding: 0.1rem 0.4rem;
+    margin: 0 0.2rem;
+    --bs-btn-color: var(--nav-light-text-color);
+    --bs-btn-hover-bg: var(--nav-button-hover-color);
+    --bs-btn-active-bg: var(--nav-item-active-color);
+    --bs-btn-active-border-color: var(--nav-item-active-color);
+    --bs-btn-active-color: var(--nav-dark-text-color);
+}
+
+.nav-light-text {
+    text-decoration: none;
+    color: var(--nav-light-text-color);
+    border-radius: 0.5rem;
+    padding: 0.3rem 0.4rem;
+    &:hover {
+        background-color: var(--nav-button-hover-color);
+    }
+}
+
+.logo svg{
+    width: 20px;
+    height: 20px;
+}
+
+.nav-dark-text {
+    text-decoration: none;
+    color: var(--nav-dark-text-color);
+}
+
+.btn{
+    --bs-btn-color: var(--nav-dark-text-color);
+    --bs-btn-hover-bg: var(--nav-item-hover-color);
+    --bs-btn-hover-color: var(--nav-dark-text-color);
+    --bs-btn-active-bg: var(--nav-item-active-color);
+    --bs-btn-active-border-color: var(--nav-item-active-color);
+    --bs-btn-active-color: var(--nav-dark-text-color);
+}
+
+.dropdown-menu {
+    --bs-dropdown-padding-y: 0;
+    --bs-dropdown-bg: var(--note-backround-color);
+    --bs-dropdown-link-color: var(--nav-dark-text-color);
+    --bs-dropdown-link-hover-color: var(--nav-dark-text-color);
+    --bs-dropdown-link-hover-bg: var(--nav-item-hover-color);
+    --bs-dropdown-link-active-bg: var(--nav-item-active-color);
+    --bs-dropdown-link-active-color: var(--nav-dark-text-color);
+    --bs-dropdown-border-color: var(--nav-item-hover-color);
+    box-shadow: 0 .2rem 1rem .2rem rgba(0, 0, 0, 0.1);
+}
+
+.door-icon {
+    cursor: pointer;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.logout:hover .door-icon {
+    color: #000000;
+}
+
+.logout:hover .door-icon::before {
+    content: "\F307";
+    font-family: "Bootstrap Icons";
 }
