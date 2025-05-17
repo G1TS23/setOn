@@ -197,7 +197,7 @@ h1 textarea {
 }
 
 .logout:hover .door-icon {
-    color: #000000;
+    color: var(--nav-dark-text-color);
 }
 
 .logout:hover .door-icon::before {
