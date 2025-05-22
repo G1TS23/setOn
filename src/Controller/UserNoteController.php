@@ -19,7 +19,7 @@ final class UserNoteController extends AbstractController
         $noteUrl = '/notes/' . $note->getId();
         $userNotesUrl = '/user/' . $note->getOwner()->getId() . '/notes/';
         $user = $security->getUser();
-        if ($note->getOwner() !== $user) {
+        if ($note->getOwner() !== $user && !$note->getEditors()->contains($user)) {
             throw $this->createAccessDeniedException('You do not have permission to view this note.');
         }
         $notes = $user->getNotes();
