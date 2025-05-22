@@ -19,6 +19,9 @@ final class UserNoteController extends AbstractController
         $noteUrl = '/notes/' . $note->getId();
         $userNotesUrl = '/user/' . $note->getOwner()->getId() . '/notes/';
         $user = $security->getUser();
+        if ($note->getOwner() !== $user) {
+            throw $this->createAccessDeniedException('You do not have permission to view this note.');
+        }
         $notes = $user->getNotes();
         return $this->render('user_note/index.html.twig', [
             'notes' => $notes,
@@ -48,6 +51,9 @@ final class UserNoteController extends AbstractController
     public function duplicate(Note $note, EntityManagerInterface $entityManager, Security $security): Response
     {
         $user = $security->getUser();
+        if ($note->getOwner() !== $user) {
+            throw $this->createAccessDeniedException('You do not have permission to duplicate this note.');
+        }
         $duplicateNote = new Note();
         $duplicateNote->setTitle($note->getTitle());
         $duplicateNote->setContent($note->getContent());
@@ -60,8 +66,12 @@ final class UserNoteController extends AbstractController
     }
 
     #[Route('/{id}', name: 'user_note_delete', methods: ['POST'])]
-    public function delete(Request $request, Note $note, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Note $note, EntityManagerInterface $entityManager, Security $security): Response
     {
+        $user = $security->getUser();
+        if ($note->getOwner() !== $user) {
+            throw $this->createAccessDeniedException('You do not have permission to delete this note.');
+        }
         if ($this->isCsrfTokenValid('delete'.$note->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($note);
             $entityManager->flush();
