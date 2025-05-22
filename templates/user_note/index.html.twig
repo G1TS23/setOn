@@ -1,0 +1,21 @@
+{% extends './home/index.html.twig' %}
+
+{% block note %}
+    <div class="note">
+        <div class="d-flex flex-column">
+            <h1 class="note-title w-80">
+            <textarea autofocus placeholder="Nouvelle note"
+                      id="note_title_{{ note.id }}"
+                      oninput="delayedSave('title', this.value, {{ note.id }})">{{ note.title | capitalize }}</textarea>
+            </h1>
+            <textarea class="content" name="content" id="note_{{ note.id }}" style="width: 70%;"
+                      data-controller="textarea"
+                      data-action="input->textarea#input"
+                      onfocus="this.setSelectionRange(this.value.length, this.value.length)"
+                      onfocusout="this.placeholder = ''"
+                      onfocusin="this.placeholder = 'Écrivez...'"
+                      oninput="delayedSave('content', this.value, {{ note.id }})"
+                      onload="autoHeight(this)">{{ note.content }}</textarea>
+        </div>
+    </div>
+{% endblock %}

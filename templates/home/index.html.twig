@@ -56,7 +56,7 @@
                                         Descendant</a></li>
                             </ul>
                         </div>
-                        <a class="nav-light-text" href="#" title="Create a note"><i
+                        <a class="nav-light-text" href="{{ path('user_note_add') }}" title="Create a note"><i
                                     class="fa-regular fa-square-plus"></i>
                         </a>
                     </div>
@@ -65,16 +65,16 @@
             {% for note in user.notes %}
                 <li class="note-item">
                     <form class="d-flex align-items-baseline justify-content-between"
-                          method="post" action="{{ path('app_note_delete', {'id': note.id}) }}"
+                          method="post" action="{{ path('user_note_delete', {'id': note.id}) }}"
                           onsubmit="return confirm('Are you sure you want to delete this item?');">
                         <a class="nav-dark-text title" id="link-{{ note.id }}" style="flex: 1;"
-                           href="{{ path('app_note_show', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
+                           href="{{ path('user_note', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
                         <div class="edit-icons">
                             <button class="btn" title="Delete note"><i class="fa-regular fa-trash-can"></i></button>
                             <label for="">
                                 <a class="nav-light-text"
-                                   href="#" title="Duplicate note"><i
+                                   href="{{ path('user_note_duplicate', {id: note.id}) }}" title="Duplicate note"><i
                                             class="fa-regular fa-copy"></i></a></label>
                         </div>
                     </form>
@@ -100,7 +100,7 @@
             {% for note in user.contributions %}
             <li class="note-item">
                 <a class="nav-dark-text title" id="link-{{ note.id }}" style="flex: 1;"
-                    href="{{ path('app_note_show', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
+                    href="{{ path('user_note', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
             </li>
             {% endfor %}
         </ul>
