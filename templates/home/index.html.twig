@@ -108,7 +108,7 @@
         </nav>
         <div class="resizer" id="resizer"></div>
         {% block note %}
-            Accueil !
+            {%  include 'home/home.html.twig' with {'user': user} %}
         {% endblock %}
     </main>
     <script>

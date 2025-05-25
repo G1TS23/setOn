@@ -1,0 +1,15 @@
+<div class="d-flex flex-column align-items-start justify-content-start m-5 w-100">
+    <h1 class="mb-5">Bonjour, {{ user.name }} !</h1>
+    <span><i class="bi bi-clock-history p-1"></i>Pages modifiées récemment</span>
+    <div class="d-flex align-items-start justify-content-start p-3 gap-3 wrap">
+        {% for note in user.notes  | sort((a, b) => b.updatedAt <=> a.updatedAt) %}
+        <a class="btn btn-outline-secondary w-100 h-25" href="{{ path('user_note', {id: note.id}) }}">
+            <p class="fs-6 fw-bold">{{ note.title | capitalize ?: 'Nouvelle note' }}</p>
+            <p>{{ (note.content | length > 20) ? (note.content | slice(0, 20) ~ '...') : note.content }}</p>
+        </a>
+        {% else %}
+    </div>
+    <p>Aucune note trouvée.</p>
+    {% endfor %}
+
+</div>
