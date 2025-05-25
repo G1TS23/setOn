@@ -63,8 +63,8 @@
                         </div>
                     </div>
                 </li>
-                {% for note in user.notes %}
-                    <li class="note-item">
+                {% for note in user.notes | sort((a, b) => b.updatedAt <=> a.updatedAt) %}
+                    <li class="note-item {{ app.request.pathinfo starts with '/note/' and note.id == app.request.attributes.get('id') ? 'active' : '' }}">
                         <form class="d-flex align-items-baseline justify-content-between"
                               method="post" action="{{ path('user_note_delete', {'id': note.id}) }}"
                               onsubmit="return confirm('Are you sure you want to delete this item?');">
@@ -98,8 +98,8 @@
                         </div>
                     </div>
                 </li>
-                {% for note in user.contributions %}
-                    <li class="note-item">
+                {% for note in user.contributions | sort((a, b) => b.updatedAt <=> a.updatedAt) %}
+                    <li class="note-item  {{ app.request.pathinfo starts with '/note/' and note.id == app.request.attributes.get('id') ? 'active' : '' }}">
                         <a class="nav-dark-text title" id="link-{{ note.id }}" style="flex: 1;"
                            href="{{ path('user_note', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
                     </li>
