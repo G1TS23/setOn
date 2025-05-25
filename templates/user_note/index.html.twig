@@ -3,19 +3,68 @@
 {% block note %}
     <div class="note">
         <div class="d-flex flex-column">
-            <h1 class="note-title w-80">
-            <textarea autofocus placeholder="Nouvelle note"
-                      id="note_title_{{ note.id }}"
-                      oninput="delayedSave('title', this.value, {{ note.id }})">{{ note.title | capitalize }}</textarea>
-            </h1>
-            <textarea class="content" name="content" id="note_{{ note.id }}" style="width: 70%;"
+            <textarea
+                    class="note-title"
+                    autofocus placeholder="Nouvelle note"
+                    id="note_title_{{ note.id }}"
+                    oninput="delayedSave('title', this.value, {{ note.id }})">{{ note.title | capitalize }}</textarea>
+
+            <textarea class="content" name="content" id="note_{{ note.id }}"
                       data-controller="textarea"
                       data-action="input->textarea#input"
                       onfocus="this.setSelectionRange(this.value.length, this.value.length)"
                       onfocusout="this.placeholder = ''"
                       onfocusin="this.placeholder = 'Écrivez...'"
                       oninput="delayedSave('content', this.value, {{ note.id }})"
-                      onload="autoHeight(this)">{{ note.content }}</textarea>
+                      onload="resize(this)">{{ note.content }}</textarea>
         </div>
     </div>
+    <script>
+        (function () {
+            const eventSource = new EventSource("{{ mercure(noteUrl)|escape('js') }}");
+            eventSource.onmessage = event => {
+                const data = JSON.parse(event.data);
+                const textarea = document.querySelector(`#note_${data.id}`);
+                const title = document.querySelector(`#note_title_${data.id}`);
+                // Utiliser 'value' pour mettre à jour le contenu des champs textarea
+                if (textarea) {
+                    textarea.value = data.content;
+                }
+                if (title) {
+                    title.value = data.title;
+                }
+            }
+        })();
+
+        let saveTimeout;
+
+        function delayedSave(field, value, noteId) {
+            const aLink = document.getElementById(`link-${noteId}`);
+            if (aLink && field === 'title') {
+                aLink.innerText = value; // Mettre à jour le titre de la note
+            }
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                fetch(`/note/${noteId}/autosave`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({field, value}),
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Erreur lors de la sauvegarde automatique');
+                    }
+                }).catch(error => console.error('Erreur réseau :', error));
+            }, 2000);
+        }
+
+        document.querySelector('.content').addEventListener("focus", function () {
+            this.scrollTo({
+                top: this.scrollHeight,
+                behavior: "smooth"
+            });
+        });
+    </script>
 {% endblock %}
