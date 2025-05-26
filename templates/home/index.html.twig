@@ -25,7 +25,9 @@
                 </li>
                 <li>
 
-                    <button type="button" class="btn d-flex w-100">
+                    <a href="{{ path('app_user_invitation') }}"
+                       type="button"
+                       class="btn d-flex w-100  {{ app.request.pathinfo starts with '/invitation' ? 'active' : '' }}">
                         <div class="d-flex align-items-center justify-content-between gap-2 w-100">
                             <div class="d-flex align-items-center justify-content-start gap-2">
                                 {% if user.requests | length > 0 %}
@@ -39,7 +41,7 @@
                                 <span class="badge bg-danger rounded-pill">{{ user.requests | length }}</span>
                             {% endif %}
                         </div>
-                    </button>
+                    </a>
                 </li>
                 <li>
                     <div class="notes-section">
