@@ -60,6 +60,20 @@
             }, 2000);
         }
 
+        // Ajout d'un gestionnaire pour déplacer le focus sur "content" lorsque "Entrée" est pressé
+        document.querySelectorAll('.note-title').forEach(title => {
+            const id = {{ note.id }};
+            title.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Empêche le comportement par défaut (nouvelle ligne)
+                    const content = document.querySelector(`#note_${id}`);
+                    if (content) {
+                        content.focus(); // Déplace le focus sur le champ "content"
+                    }
+                }
+            });
+        });
+
         document.querySelector('.content').addEventListener("focus", function () {
             this.scrollTo({
                 top: this.scrollHeight,
