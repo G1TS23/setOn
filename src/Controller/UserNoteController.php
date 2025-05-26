@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Invitation;
 use App\Entity\Note;
+use App\Enums\InvitationStatusEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -23,6 +25,9 @@ final class UserNoteController extends AbstractController
         $noteUrl = '/notes/' . $note->getId();
         $userNotesUrl = '/user/' . $note->getOwner()->getId() . '/notes/';
         $user = $security->getUser();
+        $pendingRequests = $user->getRequests()->filter(function (Invitation $invitation) {
+            return $invitation->getStatus() === InvitationStatusEnum::PENDING;
+        });
         if ($note->getOwner() !== $user && !$note->getEditors()->contains($user)) {
             throw $this->createAccessDeniedException('You do not have permission to view this note.');
         }
@@ -33,6 +38,7 @@ final class UserNoteController extends AbstractController
             'noteUrl' => $noteUrl,
             'userNotesUrl' => $userNotesUrl,
             'user' => $user,
+            'pendingRequests' => $pendingRequests,
         ]);
     }
 

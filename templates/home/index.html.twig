@@ -19,7 +19,7 @@
                 </div>
                 <li>
                     <a href="{{ path('app_home') }}" type="button"
-                       class="btn d-flex w-100 align-items-center justify-content-start gap-2 {{ app.request.pathinfo starts with '/wellcome' ? 'active' : '' }}">
+                       class="btn d-flex w-100 align-items-center justify-content-start gap-2 {{ app.request.pathinfo starts with '/home' ? 'active' : '' }}">
                         <i class="fa-solid fa-house"></i>Accueil
                     </a>
                 </li>
@@ -30,15 +30,15 @@
                        class="btn d-flex w-100  {{ app.request.pathinfo starts with '/invitation' ? 'active' : '' }}">
                         <div class="d-flex align-items-center justify-content-between gap-2 w-100">
                             <div class="d-flex align-items-center justify-content-start gap-2">
-                                {% if user.requests | length > 0 %}
+                                {% if pendingRequests | length > 0 %}
                                     <i class="fa-solid fa-envelope"></i>
                                 {% else %}
                                     <i class="fa-solid fa-envelope-open"></i>
                                 {% endif %}
                                 Invitations
                             </div>
-                            {% if user.requests | length > 0 %}
-                                <span class="badge bg-danger rounded-pill">{{ user.requests | length }}</span>
+                            {% if pendingRequests | length > 0 %}
+                                <span class="badge bg-danger rounded-pill">{{ pendingRequests | length }}</span>
                             {% endif %}
                         </div>
                     </a>
