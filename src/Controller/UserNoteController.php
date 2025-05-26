@@ -105,6 +105,8 @@ final class UserNoteController extends AbstractController
                 return new JsonResponse(['error' => 'Invalid field'], Response::HTTP_BAD_REQUEST);
             }
 
+            $note->setUpdatedAt(new \DateTimeImmutable());
+
             $entityManager->flush();
 
             $noteUrl = '/notes/' . $note->getId();
