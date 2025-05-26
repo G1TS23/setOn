@@ -44,6 +44,12 @@
                 aLink.innerText = value; // Mettre à jour le titre de la note
             }
             clearTimeout(saveTimeout);
+
+            if (field === 'content') {
+                value = value.replace(/<div>/g, '\n').replace(/<\/div>/g, '').replace(/<br>/g, '\n');
+                value = value.replace(/\n/g, '\\n');
+            }
+
             saveTimeout = setTimeout(() => {
                 fetch(`/note/${noteId}/autosave`, {
                     method: 'POST',

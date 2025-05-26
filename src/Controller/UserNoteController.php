@@ -100,7 +100,8 @@ final class UserNoteController extends AbstractController
             if ($field === 'title') {
                 $note->setTitle($value);
             } elseif ($field === 'content') {
-                $note->setContent($value);
+                // Décoder les retours à la ligne encodés
+                $note->setContent(str_replace('\\n', "\n", $value));
             } else {
                 return new JsonResponse(['error' => 'Invalid field'], Response::HTTP_BAD_REQUEST);
             }
