@@ -123,14 +123,8 @@
             const sidebar = document.querySelector('.nav-left');
             let x = 0;
 
-            let sidebarWidth = 0;
-
-            // if(browser.cookies.get('sidebarWidth')){
-            //     sidebarWidth = browser.cookies.get('sidebarWidth');
-            //     sidebar.style.width = `${sidebarWidth}px`;
-            // } else {
-            //     console.log('no cookies');
-            // }
+            let sidebarWidth = localStorage.getItem('sidebarWidth') || 350;
+            sidebar.style.width = `${sidebarWidth}px`;
 
             function mouseDownHandler(e) {
                 x = e.clientX;
@@ -140,11 +134,13 @@
                 document.addEventListener('mouseup', mouseUpHandler);
             }
 
+            let localStorageWidth = 0;
 
             function mouseMoveHandler(e) {
                 const dx = e.clientX - x;
                 const newWidth = Math.max(100, Math.min(window.innerWidth / 2, sidebarWidth + dx));
                 sidebar.style.width = `${newWidth}px`;
+                localStorageWidth = newWidth;
             }
 
 
@@ -152,6 +148,7 @@
                 resizer.classList.remove('active');
                 document.removeEventListener('mousemove', mouseMoveHandler);
                 document.removeEventListener('mouseup', mouseUpHandler);
+                localStorage.setItem('sidebarWidth', localStorageWidth);
             }
 
             resizer.addEventListener('mousedown', mouseDownHandler);
