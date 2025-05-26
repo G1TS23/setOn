@@ -150,6 +150,12 @@ textarea, input, p {
     background-color: var(--nav-item-hover-color);
 }
 
+a.active{
+    background-color: var(--nav-item-hover-color);
+    --bs-btn-active-bg: var(--nav-item-hover-color);
+    --bs-btn-active-border-color: var(--nav-item-hover-color);
+}
+
 .title {
     display: block;
     white-space: nowrap;
