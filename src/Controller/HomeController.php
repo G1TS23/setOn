@@ -15,7 +15,7 @@ final class HomeController extends AbstractController
         $user = $security->getUser();
         $firstNote = $user->getNotes()->first();
         $noteUrl = '/notes/' . $firstNote->getId();
-        return $this->render('home/index.html.twig', [
+        return $this->render('home/home.html.twig', [
             'controller_name' => 'HomeController',
             'noteUrl' => $noteUrl,
             'user' => $user
