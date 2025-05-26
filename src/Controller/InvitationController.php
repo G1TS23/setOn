@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Invitation;
+use App\Enums\InvitationStatusEnum;
 use App\Form\InvitationType;
 use App\Repository\InvitationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,10 @@ final class InvitationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $invitation->setSender($invitation->getNote()->getOwner());
+            $invitation->setStatus((string)InvitationStatusEnum::PENDING);
+            $invitation->setCreatedAt(new \DateTimeImmutable());
+            $invitation->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->persist($invitation);
             $entityManager->flush();
 
@@ -57,6 +62,7 @@ final class InvitationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $invitation->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->flush();
 
             return $this->redirectToRoute('app_invitation_index', [], Response::HTTP_SEE_OTHER);

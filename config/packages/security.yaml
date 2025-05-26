@@ -40,6 +40,7 @@ security:
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/home, roles: ROLE_USER }
         - { path: ^/note, roles: ROLE_USER }
+        - { path: ^/invitation, roles: ROLE_USER }
         - { path: ^/, roles: ROLE_USER }
 
 when@test:
