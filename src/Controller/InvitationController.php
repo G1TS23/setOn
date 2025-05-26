@@ -32,7 +32,7 @@ final class InvitationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $invitation->setSender($invitation->getNote()->getOwner());
-            $invitation->setStatus((string)InvitationStatusEnum::PENDING);
+            $invitation->setStatus(InvitationStatusEnum::PENDING);
             $invitation->setCreatedAt(new \DateTimeImmutable());
             $invitation->setUpdatedAt(new \DateTimeImmutable());
             $entityManager->persist($invitation);

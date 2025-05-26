@@ -1,7 +1,44 @@
 {% extends './home/index.html.twig' %}
 
 {% block note %}
-<div class="note">
-    <h1>Invitations</h1>
-</div>
+    <div class="note m-5">
+        <h1 class="mb-5">Invitations</h1>
+        {% for request in user.requests %}
+            {% if request.status == constant('App\\Enums\\InvitationStatusEnum::PENDING') %}
+                <div class="invitation-item mb-3 border p-3 rounded">
+                    <h6 class="w-100 text-end">{{ request.sender.name }} vous a invité à contribuer à cette note</h6>
+                    <h3 class="fw-bold">{{ request.note.title | capitalize ?: 'Nouvelle note' }}</h3>
+                    <span>{{ request.description | capitalize ?: '' }}</span><br>
+                    <span>{{ request.note.content | slice(0, 50) ~ '...' }}</span>
+                    <div class="d-flex align-items-center justify-content-start">
+                        <form method="post" action="{{ path('app_user_invitation_accept', {'id': request.id}) }}">
+                            <button type="submit" class="btn"><i class="bi bi-check2-square"></i></button>
+                        </form>
+                        <form method="post" action="{{ path('app_user_invitation_decline', {'id': request.id}) }}">
+                            <button type="submit" class="btn"><i class="bi bi-x-square"></i></button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <p>Aucune requête en attente.</p>
+        {% endfor %}
+
+        {% for invitation in user.invitations %}
+            {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::PENDING') %}
+                <p>Invitation id : {{ invitation.id }}</p>
+                <p>Vous avez invité {{ invitation.receiver.name }} à contribuer à cette note</p>
+            {% endif %}
+            {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::REJECTED') %}
+                <p>Invitation id : {{ invitation.id }}</p>
+                <p>{{ invitation.receiver.name }} a refuser votre invitation</p>
+            {% endif %}
+            {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::APPROVED') %}
+                <p>Invitation id : {{ invitation.id }}</p>
+                <p>{{ invitation.receiver.name }} a accepté votre invitation</p>
+            {% endif %}
+        {% else %}
+            <p>Aucune invitation en attente d'acceptation.</p>
+        {% endfor %}
+    </div>
 {% endblock %}
