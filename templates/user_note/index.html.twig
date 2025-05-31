@@ -1,26 +1,29 @@
 {% extends './home/index.html.twig' %}
 
 {% block note %}
-    <div class="note">
-        <div class="d-flex flex-column">
-            <!-- TODO refacto textarea controller -->
-            <textarea
-                    class="note-title"
-                    data-controller="textarea"
-                    data-action="input->textarea#input"
-                    autofocus placeholder="Nouvelle note"
-                    id="note_title_{{ note.id }}"
-                    onload="resize(this)"
-                    oninput="delayedSave('title', this.value, {{ note.id }})">{{ note.title | capitalize }}</textarea>
+    <div class="d-flex flex-1 flex-column align-items-start justify-content-center">
+        {% include "./user_note/header.html.twig" with {'note': note} %}
+        <div class="note">
+            <div class="d-flex flex-column">
+                <!-- TODO refactor textarea controller -->
+                <textarea
+                        class="note-title"
+                        data-controller="textarea"
+                        data-action="input->textarea#input"
+                        autofocus placeholder="Nouvelle note"
+                        id="note_title_{{ note.id }}"
+                        onload="resize(this)"
+                        oninput="delayedSave('title', this.value, {{ note.id }})">{{ note.title | capitalize }}</textarea>
 
-            <p contenteditable="true" class="content" name="content" id="note_{{ note.id }}"
-                      data-controller="textarea"
-                      data-action="input->textarea#input"
-                      onfocus="this.setSelectionRange(this.value.length, this.value.length)"
-                      onfocusout="this.placeholder = ''"
-                      onfocusin="this.placeholder = 'Écrivez...'"
-                      oninput="delayedSave('content', this.innerText, {{ note.id }})"
-                      onload="resize(this)">{{ note.content }}</p>
+                <p contenteditable="true" class="content" name="content" id="note_{{ note.id }}"
+                   data-controller="textarea"
+                   data-action="input->textarea#input"
+                   onfocus="this.setSelectionRange(this.value.length, this.value.length)"
+                   onfocusout="this.placeholder = ''"
+                   onfocusin="this.placeholder = 'Écrivez...'"
+                   oninput="delayedSave('content', this.innerText, {{ note.id }})"
+                   onload="resize(this)">{{ note.content }}</p>
+            </div>
         </div>
     </div>
     <script>
