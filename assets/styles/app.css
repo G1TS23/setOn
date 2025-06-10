@@ -20,6 +20,10 @@
     color: var(--note-text-color) !important;
 }
 
+.light-nav-text-color {
+    color: var(--nav-light-text-color) !important;
+}
+
 body, h1, textarea {
     font-family: 'Helvetica', sans-serif;
     color: var(--note-text-color);
