@@ -6,8 +6,9 @@
 
     <main class="note-container">
         <nav class="nav-left">
-            <ul>
-                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+
+
+                <div class="user-title d-flex align-items-center justify-content-between gap-2 mb-3">
                     <div class="d-flex align-items-center justify-content-start gap-2">
                         <img src="{{ asset('images/Logo_v4_setOn.svg') }}" alt="logo" class="logo" width="30"
                              height="30">
@@ -17,14 +18,14 @@
                         <i class="bi bi-door-closed-fill door-icon" title="Logout"></i>
                     </a>
                 </div>
-                <li>
+            <ul>
+                <li class="home">
                     <a href="{{ path('app_home') }}" type="button"
-                       class="btn d-flex w-100 align-items-center justify-content-start gap-2 {{ app.request.pathinfo starts with '/home' ? 'active' : '' }}">
+                       class="btn mb-1 d-flex w-100 align-items-center justify-content-start gap-2 {{ app.request.pathinfo starts with '/home' ? 'active' : '' }}">
                         <i class="fa-solid fa-house"></i>Accueil
                     </a>
                 </li>
-                <li>
-
+                <li class="invitations">
                     <a href="{{ path('app_user_invitation') }}"
                        type="button"
                        class="btn d-flex w-100  {{ app.request.pathinfo starts with '/invitation' ? 'active' : '' }}">
@@ -74,7 +75,7 @@
                                href="{{ path('user_note', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
                             <div class="edit-icons">
-                                <button class="btn" title="Delete note"><i class="fa-regular fa-trash-can"></i></button>
+                                <button class="btn nav-light-text" title="Delete note"><i class="fa-regular fa-trash-can"></i></button>
                                 <label for="">
                                     <a class="nav-light-text"
                                        href="{{ path('user_note_duplicate', {id: note.id}) }}" title="Duplicate note"><i
@@ -121,12 +122,16 @@
                 aLink.innerText = data.title;
             }
 
-            const resizer = document.getElementById('resizer');
+            const resizer = document.querySelector('.resizer');
             const sidebar = document.querySelector('.nav-left');
+            const main = document.querySelector('.main');
             let x = 0;
 
-            let sidebarWidth = localStorage.getItem('sidebarWidth') || 350;
+            let sidebarWidth = localStorage.getItem('sidebarWidth') || 250;
             sidebar.style.width = `${sidebarWidth}px`;
+            main.style.marginLeft = `${Math.max(sidebarWidth, 200)}px`;
+            resizer.style.marginLeft = `${Math.max(sidebarWidth, 200)}px`;
+
 
             function mouseDownHandler(e) {
                 x = e.clientX;
@@ -140,8 +145,10 @@
 
             function mouseMoveHandler(e) {
                 const dx = e.clientX - x;
-                const newWidth = Math.max(100, Math.min(window.innerWidth / 2, sidebarWidth + dx));
+                const newWidth = Math.min(425, sidebarWidth + dx);
                 sidebar.style.width = `${newWidth}px`;
+                resizer.style.marginLeft = `${Math.max(newWidth, 200)}px`;
+                main.style.marginLeft = `${Math.max(newWidth, 200)}px`;
                 localStorageWidth = newWidth;
             }
 

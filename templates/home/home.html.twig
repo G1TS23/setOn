@@ -1,12 +1,12 @@
 {% extends './home/index.html.twig' %}
 
 {% block note %}
-    <div class="d-flex flex-1 flex-column align-items-start justify-content-center">
+    <div class="main d-flex flex-1 flex-column align-items-start justify-content-center">
         {% include "./home/header.html.twig" %}
-        <div class="note m-3 overflow-hidden">
+        <div class="m-3 overflow-hidden">
             <div class="d-flex flex-column align-items-start justify-content-start">
                 <h1 class="mb-5">Bonjour, {{ user.name }} !</h1>
-                {% if user.notes | length == 0 %}
+                {% if user.notes | length != 0 %}
                     <span><i class="bi bi-clock-history p-1"></i>
                     {% if user.notes | length > 1 %}
                         Notes modifiées récemment
