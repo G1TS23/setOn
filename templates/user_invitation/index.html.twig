@@ -1,47 +1,59 @@
 {% extends './home/index.html.twig' %}
 
 {% block note %}
-    <div class="d-flex flex-1 flex-column align-items-start justify-content-center">
+    <div class="main d-flex flex-1 flex-column align-items-start justify-content-center">
         {% include "./user_invitation/header.html.twig" %}
-        <div class="note m-3">
+        <div class="note m-3 w-100">
             <h1 class="mb-5">Invitations</h1>
             {% for request in user.requests %}
                 {% if request.status == constant('App\\Enums\\InvitationStatusEnum::PENDING') %}
-                    <div class="invitation-item mb-3 border p-3 rounded">
-                        <h6 class="w-100 text-end">{{ request.sender.name }} vous a invité à contribuer à cette
+                    <div class="invitation-item mb-3 p-3 w-100">
+                        <h6 class="w-100">{{ request.sender.name }} vous a invité à contribuer à cette
                             note</h6>
-                        <h3 class="fw-bold">{{ request.note.title | capitalize ?: 'Nouvelle note' }}</h3>
-                        <span>{{ request.description | capitalize ?: '' }}</span><br>
-                        <span>{{ request.note.content | slice(0, 50) ~ '...' }}</span>
-                        <div class="d-flex align-items-center justify-content-start">
+                        {#                        <span>{{ request.description | capitalize ?: '' }}</span><br> #}
+                        <div class="m-2">
+                            <span class="fw-bold">{{ request.note.title | capitalize ?: 'Nouvelle note' }}</span>
+                            <span>{{ request.note.content | length < 100 ? request.note.content : request.note.content | slice(0, 100) ~ '...' }}</span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-start mt-1">
                             <form method="post" action="{{ path('app_user_invitation_accept', {'id': request.id}) }}">
-                                <button type="submit" class="btn"><i class="bi bi-check2-square"></i></button>
+                                <button type="submit" class="btn">Accepter</button>
                             </form>
                             <form method="post" action="{{ path('app_user_invitation_decline', {'id': request.id}) }}">
-                                <button type="submit" class="btn"><i class="bi bi-x-square"></i></button>
+                                <button type="submit" class="btn">Refuser</button>
                             </form>
                         </div>
                     </div>
                 {% endif %}
             {% else %}
-                <p>Aucune requête en attente.</p>
+                <p class="mx-0">Aucune requête en attente.</p>
             {% endfor %}
 
+            <h3 class="my-2 fw-bold">Historique</h3>
             {% for invitation in user.invitations %}
-                {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::PENDING') %}
-                    <p>Invitation id : {{ invitation.id }}</p>
-                    <p>Vous avez invité {{ invitation.receiver.name }} à contribuer à cette note</p>
-                {% endif %}
-                {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::REJECTED') %}
-                    <p>Invitation id : {{ invitation.id }}</p>
-                    <p>{{ invitation.receiver.name }} a refuser votre invitation</p>
-                {% endif %}
-                {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::APPROVED') %}
-                    <p>Invitation id : {{ invitation.id }}</p>
-                    <p>{{ invitation.receiver.name }} a accepté votre invitation</p>
-                {% endif %}
+                <div class="invitation-item p-3 w-100">
+                    {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::PENDING') %}
+                        <div class="d-flex align-items-center justify-content-start gap-2">
+                        <p class="mx-0 flex-1">Vous avez invité {{ invitation.receiver.name }} à contribuer à cette note</p>
+                        <form method="post" action="{{ path('user_invitation_delete', {'id': invitation.id}) }}">
+                            <button type="submit" class="btn">Supprimer</button>
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ invitation.id) }}">
+                        </form>
+                        </div>
+                    {% endif %}
+                    {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::REJECTED') %}
+                        <p class="mx-0">{{ invitation.receiver.name }} a refuser votre invitation</p>
+                    {% endif %}
+                    {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::APPROVED') %}
+                        <p class="mx-0">{{ invitation.receiver.name }} a accepté votre invitation
+                        </p>
+                    {% endif %}
+                    <div class="m-2">
+                        <span class="fw-bold">{{ invitation.note.title | capitalize ?: 'Nouvelle note' }}</span><br>
+                        <span>{{ invitation.note.content | length < 100 ? invitation.note.content : invitation.note.content | slice(0, 100) ~ '...' }}</span>
+                    </div>                </div>
             {% else %}
-                <p>Aucune invitation en attente d'acceptation.</p>
+                <p class="mx-0">Aucune invitation en attente d'acceptation.</p>
             {% endfor %}
         </div>
     </div>

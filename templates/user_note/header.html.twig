@@ -2,7 +2,26 @@
     <span>{{ note.title }}</span>
     <div class="d-flex align-items-baseline justify-content-end gap-1">
         <span class="last-edit">Dernière modification : {{ note.updatedAt |format_datetime('relative_medium', 'none', locale: 'fr') }}</span>
-        <button class="btn nav-light-text note-text-color">Partager</button>
+        <div class="dropdown">
+            <button type="button" class="btn nav-light-text note-text-color" data-bs-toggle="dropdown"
+                    aria-expanded="false" data-bs-auto-close="true">
+                Partager
+            </button>
+            <form class="dropdown-menu user-menu p-4"
+                  action="{{ path('user_note_invite', {'id': note.id}) }}" method="post">
+                <div class="mb-3">
+                    <label for="message" class="note-text-color form-label">Message</label>
+                    <input contenteditable="true" class="form-control" name="message" id="message"
+                           placeholder="Ecrivez un message personnalisé"></input>
+                </div>
+                <div class="mb-3">
+                    <label for="userEmail" class="note-text-color form-label">Adresse Email</label>
+                    <input type="email" class="form-control" name="userEmail" id="userEmail"
+                           placeholder="email@example.com" required>
+                </div>
+                <button type="submit" class="btn nav-light-text note-text-color btn-invite">Inviter</button>
+            </form>
+        </div>
         <button class="btn nav-light-text note-text-color"><i class="fa-solid fa-ellipsis"></i></button>
     </div>
 </div>

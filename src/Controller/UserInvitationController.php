@@ -7,6 +7,7 @@ use App\Enums\InvitationStatusEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -83,4 +84,20 @@ final class UserInvitationController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('app_user_invitation');
     }
+
+    #[Route('/{id}', name: 'user_invitation_delete', methods: ['POST'])]
+    public function delete(Request $request, Invitation $invitation, EntityManagerInterface $entityManager, Security $security): Response
+    {
+        $user = $security->getUser();
+        if ($invitation->getSender() !== $user) {
+            throw $this->createAccessDeniedException('You do not have permission to delete this note.');
+        }
+        if ($this->isCsrfTokenValid('delete' . $invitation->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($invitation);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_user_invitation', [], Response::HTTP_SEE_OTHER);
+    }
+
 }

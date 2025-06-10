@@ -234,6 +234,11 @@ a.active {
     --bs-btn-active-color: var(--nav-dark-text-color);
 }
 
+.btn-invite {
+    min-width: 6rem;
+    background-color: var(--nav-item-active-color);
+}
+
 .dropdown-menu {
     --bs-dropdown-padding-y: 0;
     --bs-dropdown-bg: var(--note-background-color);
@@ -244,6 +249,15 @@ a.active {
     --bs-dropdown-link-active-color: var(--nav-dark-text-color);
     --bs-dropdown-border-color: var(--nav-item-hover-color);
     box-shadow: 0 .2rem 1rem .2rem rgba(0, 0, 0, 0.1);
+}
+
+.user-menu {
+    --bs-dropdown-min-width: 25rem;
+}
+
+[data-placeholder]:empty:before {
+    content: attr(data-placeholder);
+    color: #888;
 }
 
 .door-icon {
@@ -258,4 +272,7 @@ a.active {
 .logout:hover .door-icon::before {
     content: "\F307";
     font-family: "Bootstrap Icons";
+}
+.invitation-item {
+    border-top: solid 1px var(--nav-item-hover-color);
 }
