@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Invitation;
 use App\Entity\Note;
 use App\Enums\InvitationStatusEnum;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -82,7 +83,7 @@ final class UserNoteController extends AbstractController
         if ($note->getOwner() !== $user) {
             throw $this->createAccessDeniedException('You do not have permission to delete this note.');
         }
-        if ($this->isCsrfTokenValid('delete'.$note->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $note->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($note);
             $entityManager->flush();
         }
@@ -140,5 +141,42 @@ final class UserNoteController extends AbstractController
         }
 
         return new JsonResponse(['error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/{id}/share', name: 'user_note_invite', methods: ['POST'])]
+    public function share(Note $note, EntityManagerInterface $entityManager, Security $security, Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $sender = $security->getUser();
+
+        if ($request->request->has('userEmail') !== null && $userRepository->findOneByEmail($request->request->get('userEmail')) !== null) {
+            $receiver = $userRepository->findOneByEmail($request->request->get('userEmail'));
+            if ($note->getOwner() !== $sender && !$note->getEditors()->contains($receiver)) {
+                return new JsonResponse(['error' => 'You do not have permission to share this note.'], Response::HTTP_FORBIDDEN);
+            }
+            if ($request->request->get('message') !== null) {
+                $description = $request->request->get('message');
+            }
+            $invitation = new Invitation();
+            $invitation->setSender($sender);
+            $invitation->setReceiver($receiver);
+            $invitation->setNote($note);
+            $invitation->setStatus(InvitationStatusEnum::PENDING);
+            $invitation->setCreatedAt(new \DateTimeImmutable());
+            $invitation->setUpdatedAt(new \DateTimeImmutable());
+            if (isset($description)) {
+                $invitation->setDescription($description);
+            } else {
+                $invitation->setDescription('Invitation to collaborate on note: ' . $note->getTitle());
+            }
+            $entityManager->persist($invitation);
+            $entityManager->flush();
+        } else {
+            return new JsonResponse(['error' => 'Invalid user email.' . $request->request->get('userEmail')], Response::HTTP_BAD_REQUEST);
+        }
+        // Logic to share the note (e.g., send an invitation)
+        // This is a placeholder for actual sharing logic
+        // You can implement your own sharing logic here
+
+        return new JsonResponse(['success' => true, 'message' => 'User invited successfully.']);
     }
 }
