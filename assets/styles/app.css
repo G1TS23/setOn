@@ -280,3 +280,19 @@ a.active {
 .invitation-item {
     border-top: solid 1px var(--nav-item-hover-color);
 }
+
+
+@media screen and (max-width: 576px) {
+    .nav-left {
+        display: none;
+    }
+    .resizer {
+        display: none;
+    }
+    .main {
+        margin-left: 0 !important;
+    }
+    .bi-list {
+        display: inline-block !important;
+    }
+}
