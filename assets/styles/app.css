@@ -98,6 +98,9 @@ textarea, input, p {
 }
 
 .nav-left {
+    position: fixed;
+    top: 0;
+    left: 0;
     background-color: var(--nav-bg-color);
     color: var(--nav-dark-text-color);
     width: 250px;
@@ -154,8 +157,7 @@ textarea, input, p {
 }
 
 .note-header {
-    background-color: rgba(var(--note-background-color), 0.9);
-    backdrop-filter: blur(10px);
+    background-color: var(--note-background-color);
 }
 
 .flex-1 {
@@ -179,12 +181,18 @@ textarea, input, p {
 }
 
 .note-item {
+    margin-bottom: 4px;
     padding: 0.2rem .5rem;
     border-radius: .5rem;
     color: var(--nav-dark-text-color);
-
+    &:last-child {
+        margin-bottom: 0;
+    }
     &:hover {
         background-color: var(--nav-item-hover-color);
+    }
+    &:hover .edit-icons{
+        opacity: 1;
     }
 }
 
@@ -211,6 +219,7 @@ a.active {
 
 .edit-icons {
     color: var(--nav-light-text-color);
+    opacity: 0;
     display: flex;
     flex-direction: row;
     align-items: center;
