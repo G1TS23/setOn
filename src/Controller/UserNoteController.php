@@ -17,9 +17,29 @@ use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Controller for managing user notes operations.
+ *
+ * This controller handles all note-related operations including:
+ * - Viewing notes
+ * - Creating new notes
+ * - Duplicating notes
+ * - Deleting notes
+ * - Autosaving notes
+ * - Sharing notes with other users
+ */
 #[Route('/note')]
 final class UserNoteController extends AbstractController
 {
+    /**
+     * Displays a specific note.
+     *
+     * @param Note $note The note to display
+     * @param Security $security The security service for user authentication
+     * @return Response The rendered note view
+     *
+     * @throws AccessDeniedException If the user doesn't have permission to view the note
+     */
     #[Route('/{id<\d+>}', name: 'user_note', methods: ['GET'])]
     public function show(Note $note, Security $security): Response
     {
@@ -43,6 +63,13 @@ final class UserNoteController extends AbstractController
         ]);
     }
 
+    /**
+     * Creates a new empty note for the current user.
+     *
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param Security $security The security service
+     * @return Response A redirect to the newly created note
+     */
     #[Route('/new', name: 'user_note_add', methods: ['GET', 'POST'])]
     public function add(EntityManagerInterface $entityManager, Security $security): Response
     {
@@ -58,6 +85,16 @@ final class UserNoteController extends AbstractController
         return $this->redirectToRoute('user_note', ['id' => $note->getId()], Response::HTTP_SEE_OTHER);
     }
 
+    /**
+     * Creates a duplicate of an existing note.
+     *
+     * @param Note $note The note to duplicate
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param Security $security The security service
+     * @return Response A redirect to the newly duplicated note
+     *
+     * @throws AccessDeniedException If the user doesn't have permission to duplicate the note
+     */
     #[Route('/duplicate/{id}', name: 'user_note_duplicate', methods: ['GET', 'POST'])]
     public function duplicate(Note $note, EntityManagerInterface $entityManager, Security $security): Response
     {
@@ -76,6 +113,17 @@ final class UserNoteController extends AbstractController
         return $this->redirectToRoute('user_note', ['id' => $duplicateNote->getId()], Response::HTTP_SEE_OTHER);
     }
 
+    /**
+     * Deletes a note.
+     *
+     * @param Request $request The current request
+     * @param Note $note The note to delete
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param Security $security The security service
+     * @return Response A redirect to the home page
+     *
+     * @throws AccessDeniedException If the user doesn't have permission to delete the note
+     */
     #[Route('/{id}', name: 'user_note_delete', methods: ['POST'])]
     public function delete(Request $request, Note $note, EntityManagerInterface $entityManager, Security $security): Response
     {
@@ -91,6 +139,21 @@ final class UserNoteController extends AbstractController
         return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
 
+    /**
+     * Handles autosave functionality for notes.
+     *
+     * Processes AJAX requests to save note changes automatically and broadcasts updates
+     * via Mercure to all connected clients.
+     *
+     * @param Request $request The current request
+     * @param Note $note The note being edited
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param MessageBusInterface $bus The message bus for broadcasting updates
+     * @param Security $security The security service
+     * @return JsonResponse The status of the autosave operation
+     *
+     * @throws AccessDeniedException If the user doesn't have permission to edit the note
+     */
     #[Route('/{id}/autosave', name: 'app_note_autosave', methods: ['POST'])]
     public function autosave(Request $request, Note $note, EntityManagerInterface $entityManager, MessageBusInterface $bus, Security $security): JsonResponse
     {
@@ -143,6 +206,18 @@ final class UserNoteController extends AbstractController
         return new JsonResponse(['error' => 'Invalid data'], Response::HTTP_BAD_REQUEST);
     }
 
+    /**
+     * Shares a note with another user by creating an invitation.
+     *
+     * @param Note $note The note to share
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param Security $security The security service
+     * @param Request $request The current request
+     * @param UserRepository $userRepository The user repository
+     * @return JsonResponse The status of the share operation
+     *
+     * @throws AccessDeniedException If the user doesn't have permission to share the note
+     */
     #[Route('/{id}/share', name: 'user_note_invite', methods: ['POST'])]
     public function share(Note $note, EntityManagerInterface $entityManager, Security $security, Request $request, UserRepository $userRepository): JsonResponse
     {

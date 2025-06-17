@@ -11,9 +11,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Controller for managing user invitations.
+ *
+ * This controller handles all invitation-related operations for regular users including:
+ * - Viewing invitations
+ * - Creating new invitations
+ * - Accepting/declining invitations
+ * - Managing invitation status
+ * - Deleting invitations
+ */
 #[Route('/invitation')]
 final class UserInvitationController extends AbstractController
 {
+    /**
+     * Displays all invitations for the current user.
+     *
+     * Lists all invitations with a focus on pending requests.
+     *
+     * @param Security $security The security service for user authentication
+     * @return Response The rendered invitation index view
+     */
     #[Route('', name: 'app_user_invitation')]
     public function index( Security $security): Response
     {
@@ -30,6 +48,12 @@ final class UserInvitationController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays the form to create a new invitation.
+     *
+     * @param Security $security The security service
+     * @return Response The rendered new invitation form
+     */
     #[Route('/new', name: 'app_user_invitation_new')]
     public function new(Security $security): Response
     {
@@ -42,6 +66,12 @@ final class UserInvitationController extends AbstractController
         ]);
     }
 
+    /**
+     * Displays the form to edit an existing invitation.
+     *
+     * @param Security $security The security service
+     * @return Response The rendered edit invitation form
+     */
     #[Route('/{id}/edit', name: 'app_user_invitation_edit')]
     public function edit(Security $security): Response
     {
@@ -54,6 +84,22 @@ final class UserInvitationController extends AbstractController
         ]);
     }
 
+    /**
+     * Handles the acceptance of an invitation.
+     *
+     * This method:
+     * - Verifies the user is the intended recipient
+     * - Adds the user as an editor to the shared note
+     * - Updates the invitation status to APPROVED
+     *
+     * @param Invitation $invitation The invitation to accept
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param Security $security The security service
+     * @return Response A redirect to the invitation index
+     *
+     * @throws AccessDeniedException If the user is not the intended recipient
+     * @throws NotFoundHttpException If the associated note doesn't exist
+     */
     #[Route('/{id}/accept', name: 'app_user_invitation_accept')]
     public function accept(Invitation $invitation, EntityManagerInterface $entityManager, Security $security): Response
     {
@@ -72,6 +118,21 @@ final class UserInvitationController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('app_user_invitation');
     }
+
+    /**
+     * Handles the decline of an invitation.
+     *
+     * This method:
+     * - Verifies the user is the intended recipient
+     * - Updates the invitation status to REJECTED
+     *
+     * @param Invitation $invitation The invitation to decline
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param Security $security The security service
+     * @return Response A redirect to the invitation index
+     *
+     * @throws AccessDeniedException If the user is not the intended recipient
+     */
     #[Route('/{id}/decline', name: 'app_user_invitation_decline')]
     public function decline(Invitation $invitation, EntityManagerInterface $entityManager, Security $security): Response
     {
@@ -85,6 +146,22 @@ final class UserInvitationController extends AbstractController
         return $this->redirectToRoute('app_user_invitation');
     }
 
+    /**
+     * Handles the deletion of an invitation.
+     *
+     * This method:
+     * - Verifies the user is the sender of the invitation
+     * - Validates the CSRF token
+     * - Removes the invitation from the database
+     *
+     * @param Request $request The current request
+     * @param Invitation $invitation The invitation to delete
+     * @param EntityManagerInterface $entityManager The entity manager
+     * @param Security $security The security service
+     * @return Response A redirect to the invitation index
+     *
+     * @throws AccessDeniedException If the user is not the sender of the invitation
+     */
     #[Route('/{id}', name: 'user_invitation_delete', methods: ['POST'])]
     public function delete(Request $request, Invitation $invitation, EntityManagerInterface $entityManager, Security $security): Response
     {
