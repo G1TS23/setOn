@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}setOn{% endblock %}
+
+{% block body %}
+    <main class="note-container">
+        <nav class="nav-left">
+                <div class="user-title d-flex align-items-center justify-content-between gap-2 mb-3">
+                    <div class="d-flex align-items-center justify-content-start gap-2">
+                        <img src="{{ asset('images/Logo_v4_setOn.svg') }}" alt="logo" class="logo" width="30"
+                             height="30">
+                        {{ user.name }}
+                    </div>
+                    <a href="{{ path('app_logout') }}" class="btn logout">
+                        <i class="bi bi-door-closed-fill door-icon" title="Logout"></i>
+                    </a>
+                </div>
+            <ul>
+                <li class="home">
+                    <a href="{{ path('app_home') }}" type="button"
+                       class="btn mb-1 d-flex w-100 align-items-center justify-content-start gap-2 {{ app.request.pathinfo starts with '/home' ? 'active' : '' }}">
+                        <i class="fa-solid fa-house"></i>Accueil
+                    </a>
+                </li>
+                <li class="invitations">
+                    <a href="{{ path('app_user_invitation') }}"
+                       type="button"
+                       class="btn d-flex w-100  {{ app.request.pathinfo starts with '/invitation' ? 'active' : '' }}">
+                        <div class="d-flex align-items-center justify-content-between gap-2 w-100">
+                            <div class="d-flex align-items-center justify-content-start gap-2">
+                                {% if pendingRequests | length > 0 %}
+                                    <i class="fa-solid fa-envelope"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-envelope-open"></i>
+                                {% endif %}
+                                Invitations
+                            </div>
+                            {% if pendingRequests | length > 0 %}
+                                <span class="badge bg-danger rounded-pill">{{ pendingRequests | length }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <div class="notes-section">
+                        Mes notes
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="dropdown">
+                                <a class="nav-light-text" data-bs-toggle="dropdown" aria-expanded="false"
+                                   href="" title="More options">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-down-a-z"></i>
+                                            Ascendant</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-up-z-a"></i>
+                                            Descendant</a></li>
+                                </ul>
+                            </div>
+                            <a class="nav-light-text" href="{{ path('user_note_add') }}" title="Create a note"><i
+                                        class="fa-regular fa-square-plus"></i>
+                            </a>
+                        </div>
+                    </div>
+                </li>
+                {% for note in user.notes | sort((a, b) => b.updatedAt <=> a.updatedAt) %}
+                    <li class="note-item {{ app.request.pathinfo starts with '/note/' and note.id == app.request.attributes.get('id') ? 'active' : '' }}">
+                        <form class="d-flex align-items-baseline justify-content-between"
+                              method="post" action="{{ path('user_note_delete', {'id': note.id}) }}"
+                              onsubmit="return confirm('Are you sure you want to delete this item?');">
+                            <a class="nav-dark-text title" id="link-{{ note.id }}" style="flex: 1;"
+                               href="{{ path('user_note', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ note.id) }}">
+                            <div class="edit-icons">
+                                <button class="btn nav-light-text" title="Delete note"><i class="fa-regular fa-trash-can"></i></button>
+                                <label for="">
+                                    <a class="nav-light-text"
+                                       href="{{ path('user_note_duplicate', {id: note.id}) }}" title="Duplicate note"><i
+                                                class="fa-regular fa-copy"></i></a></label>
+                            </div>
+                        </form>
+                    </li>
+                {% endfor %}
+                <li>
+                    <div class="notes-section">
+                        Notes partagées
+                        <div class="dropdown">
+                            <a class="nav-light-text" data-bs-toggle="dropdown" aria-expanded="false"
+                               href="" title="More options">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-down-a-z"></i>
+                                        Ascendant</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fa-solid fa-arrow-up-z-a"></i>
+                                        Descendant</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                {% for note in user.contributions | sort((a, b) => b.updatedAt <=> a.updatedAt) %}
+                    <li class="note-item  {{ app.request.pathinfo starts with '/note/' and note.id == app.request.attributes.get('id') ? 'active' : '' }}">
+                        <a class="nav-dark-text title" id="link-{{ note.id }}" style="flex: 1;"
+                           href="{{ path('user_note', {id: note.id}) }}"> {{ note.title | capitalize ?: 'Nouvelle note' }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+        <div class="resizer" id="resizer"></div>
+        {% block note %}
+        {% endblock %}
+    </main>
+    <script>
+        (function () {
+            const eventSource = new EventSource("{{ mercure(noteUrl)|escape('js') }}");
+            eventSource.onmessage = event => {
+                const data = JSON.parse(event.data);
+                const aLink = document.getElementById(`link-${data.id}`);
+                aLink.innerText = data.title;
+            }
+
+            const resizer = document.querySelector('.resizer');
+            const sidebar = document.querySelector('.nav-left');
+            const main = document.querySelector('.main');
+            let x = 0;
+
+            let sidebarWidth = localStorage.getItem('sidebarWidth') || 250;
+            sidebar.style.width = `${sidebarWidth}px`;
+            main.style.marginLeft = `${Math.max(sidebarWidth, 200)}px`;
+            resizer.style.marginLeft = `${Math.max(sidebarWidth, 200)}px`;
+
+
+            function mouseDownHandler(e) {
+                x = e.clientX;
+                sidebarWidth = parseInt(window.getComputedStyle(sidebar).width, 10);
+                resizer.classList.add('active');
+                document.addEventListener('mousemove', mouseMoveHandler);
+                document.addEventListener('mouseup', mouseUpHandler);
+            }
+
+            let localStorageWidth = 0;
+
+            function mouseMoveHandler(e) {
+                const dx = e.clientX - x;
+                const newWidth = Math.min(425, sidebarWidth + dx);
+                sidebar.style.width = `${newWidth}px`;
+                resizer.style.marginLeft = `${Math.max(newWidth, 200)}px`;
+                main.style.marginLeft = `${Math.max(newWidth, 200)}px`;
+                localStorageWidth = newWidth;
+            }
+
+
+            function mouseUpHandler() {
+                resizer.classList.remove('active');
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+                localStorage.setItem('sidebarWidth', localStorageWidth);
+            }
+
+            resizer.addEventListener('mousedown', mouseDownHandler);
+        })();
+    </script>
+{% endblock %}

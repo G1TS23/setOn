@@ -1,0 +1,101 @@
+{% extends './home/index.html.twig' %}
+
+{% block note %}
+    <div class="main d-flex flex-1 flex-column align-items-start justify-content-center">
+        {% include "./user_note/header.html.twig" with {'note': note} %}
+        <div class="note">
+            <div class="d-flex flex-column">
+                <!-- TODO refactor textarea controller -->
+                <textarea
+                        class="note-title"
+                        data-controller="textarea"
+                        data-action="input->textarea#input"
+                        autofocus placeholder="Nouvelle note"
+                        id="note_title_{{ note.id }}"
+                        onload="resize(this)"
+                        oninput="delayedSave('title', this.value, {{ note.id }})">{{ note.title | capitalize }}</textarea>
+
+                <p contenteditable="true" class="content" name="content" id="note_{{ note.id }}"
+                   data-controller="textarea"
+                   data-action="input->textarea#input"
+                   onfocus="this.setSelectionRange(this.value.length, this.value.length)"
+                   onfocusout="this.placeholder = ''"
+                   onfocusin="this.placeholder = 'Écrivez...'"
+                   oninput="delayedSave('content', this.innerText, {{ note.id }})"
+                   onload="resize(this)">{{ note.content }}</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            const eventSource = new EventSource("{{ mercure(noteUrl)|escape('js') }}");
+            eventSource.onmessage = event => {
+                const data = JSON.parse(event.data);
+                const textarea = document.querySelector(`#note_${data.id}`);
+                const title = document.querySelector(`#note_title_${data.id}`);
+                // Utiliser 'value' pour mettre à jour le contenu des champs textarea
+                if (textarea) {
+                    textarea.innerText = data.content;
+                    textarea.style.height = 'auto';
+                    textarea.style.height = `${textarea.scrollHeight}px`;
+                }
+                if (title) {
+                    title.value = data.title;
+                    title.style.height = 'auto';
+                    title.style.height = `${title.scrollHeight}px`;
+                }
+            }
+        })();
+
+        let saveTimeout;
+
+        function delayedSave(field, value, noteId) {
+            const aLink = document.getElementById(`link-${noteId}`);
+            if (aLink && field === 'title') {
+                aLink.innerText = value; // Mettre à jour le titre de la note
+            }
+            clearTimeout(saveTimeout);
+
+            if (field === 'content') {
+                value = value.replace(/<div>/g, '\n').replace(/<\/div>/g, '').replace(/<br>/g, '\n');
+                value = value.replace(/\n/g, '\\n');
+            }
+
+            saveTimeout = setTimeout(() => {
+                fetch(`/note/${noteId}/autosave`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({field, value}),
+                }).then(response => {
+                    if (!response.ok) {
+                        console.error('Erreur lors de la sauvegarde automatique');
+                    }
+                }).catch(error => console.error('Erreur réseau :', error));
+            }, 2000);
+        }
+
+        // Ajout d'un gestionnaire pour déplacer le focus sur "content" lorsque "Entrée" est pressé
+        document.querySelectorAll('.note-title').forEach(title => {
+            const id = {{ note.id }};
+            title.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Empêche le comportement par défaut (nouvelle ligne)
+                    const content = document.querySelector(`#note_${id}`);
+                    if (content) {
+                        content.focus(); // Déplace le focus sur le champ "content"
+                    }
+                }
+            });
+        });
+
+        document.querySelector('.content').addEventListener("focus", function () {
+            this.scrollTo({
+                top: this.scrollHeight,
+                behavior: "smooth"
+            });
+        });
+    </script>
+{% endblock %}
