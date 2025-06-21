@@ -1,0 +1,40 @@
+{% extends './home/index.html.twig' %}
+
+{% block note %}
+    <div class="main d-flex flex-1 flex-column align-items-start justify-content-center">
+        {% include "./home/header.html.twig" %}
+        <div class="m-3 overflow-hidden">
+            <div class="d-flex flex-column align-items-start justify-content-start">
+                <h1 class="mb-5">Bonjour, {{ user.name }} !</h1>
+                {% if user.notes | length != 0 %}
+                    <span><i class="bi bi-clock-history p-1"></i>
+                    {% if user.notes | length > 1 %}
+                        Notes modifiées récemment
+                    {% else %}
+                        Note modifiée récemment
+                    {% endif %}
+                </span>
+                    <div class="d-flex align-items-start justify-content-start p-3 mt-3 gap-3 overflow-hidden flex-wrap">
+                        {% for note in user.notes | sort((a, b) => b.updatedAt <=> a.updatedAt) | slice(0,4) %}
+                            <a class="btn btn-outline-secondary card-note"
+                               href="{{ path('user_note', {id: note.id}) }}">
+                                <p class="fs-6 fw-bold title">{{ note.title | capitalize ?: 'Nouvelle note' }}</p>
+                                <p>{{ (note.content | length > 20) ? (note.content | slice(0, 20) ~ '...') : note.content }}</p>
+                                <p class="text-muted small">
+                                    Modifiée le {{ note.updatedAt | format_datetime('relative_medium', 'none', locale: 'fr') }}
+                                </p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <h4>C'est bien vide <i class="bi bi-emoji-surprise"></i> Créez votre première note !<a
+                                class="nav-light-text mx-2" href="{{ path('user_note_add') }}"
+                                title="Create a note"><i
+                                    class="bi bi-plus-square"></i>
+                        </a>
+                    </h4>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
