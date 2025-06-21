@@ -12,7 +12,7 @@
                             note</h6>
                         {#                        <span>{{ request.description | capitalize ?: '' }}</span><br> #}
                         <div class="m-2">
-                            <span class="fw-bold">{{ request.note.title | capitalize ?: 'Nouvelle note' }}</span>
+                            <span class="fw-bold">{{ request.note.title | capitalize ?: 'Nouvelle note' }}</span><br>
                             <span>{{ request.note.content | length < 100 ? request.note.content : request.note.content | slice(0, 100) ~ '...' }}</span>
                         </div>
                         <div class="d-flex align-items-center justify-content-start mt-1">
@@ -29,16 +29,17 @@
                 <p class="mx-0">Aucune requête en attente.</p>
             {% endfor %}
 
-            <h3 class="my-2 fw-bold">Historique</h3>
+            <h3 class="my-2 pt-5 fw-bold">Historique</h3>
             {% for invitation in user.invitations %}
                 <div class="invitation-item p-3 w-100">
                     {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::PENDING') %}
                         <div class="d-flex align-items-center justify-content-start gap-2">
-                        <p class="mx-0 flex-1">Vous avez invité {{ invitation.receiver.name }} à contribuer à cette note</p>
-                        <form method="post" action="{{ path('user_invitation_delete', {'id': invitation.id}) }}">
-                            <button type="submit" class="btn">Supprimer</button>
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ invitation.id) }}">
-                        </form>
+                            <p class="mx-0 flex-1">Vous avez invité {{ invitation.receiver.name }} à contribuer à cette
+                                note</p>
+                            <form method="post" action="{{ path('user_invitation_delete', {'id': invitation.id}) }}">
+                                <button type="submit" class="btn">Supprimer</button>
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ invitation.id) }}">
+                            </form>
                         </div>
                     {% endif %}
                     {% if invitation.status == constant('App\\Enums\\InvitationStatusEnum::REJECTED') %}
@@ -51,7 +52,8 @@
                     <div class="m-2">
                         <span class="fw-bold">{{ invitation.note.title | capitalize ?: 'Nouvelle note' }}</span><br>
                         <span>{{ invitation.note.content | length < 100 ? invitation.note.content : invitation.note.content | slice(0, 100) ~ '...' }}</span>
-                    </div>                </div>
+                    </div>
+                </div>
             {% else %}
                 <p class="mx-0">Aucune invitation en attente d'acceptation.</p>
             {% endfor %}

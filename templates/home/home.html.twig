@@ -20,6 +20,9 @@
                                href="{{ path('user_note', {id: note.id}) }}">
                                 <p class="fs-6 fw-bold title">{{ note.title | capitalize ?: 'Nouvelle note' }}</p>
                                 <p>{{ (note.content | length > 20) ? (note.content | slice(0, 20) ~ '...') : note.content }}</p>
+                                <p class="text-muted small">
+                                    Modifiée le {{ note.updatedAt | format_datetime('relative_medium', 'none', locale: 'fr') }}
+                                </p>
                             </a>
                         {% endfor %}
                     </div>
