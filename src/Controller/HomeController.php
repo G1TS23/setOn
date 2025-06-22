@@ -44,8 +44,12 @@ final class HomeController extends AbstractController
             return $invitation->getStatus() === InvitationStatusEnum::PENDING;
         });
 
+        $noteId = "0";
         $firstNote = $user->getNotes()->first();
-        $noteUrl = '/notes/' . $firstNote->getId();
+        if ($firstNote) {
+            $noteId = $firstNote->getId();
+        }
+        $noteUrl = '/notes/' . $noteId;
         return $this->render('home/home.html.twig', [
             'controller_name' => 'HomeController',
             'noteUrl' => $noteUrl,

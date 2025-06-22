@@ -39,8 +39,12 @@ final class UserInvitationController extends AbstractController
         $pendingRequests = $user->getRequests()->filter(function (Invitation $invitation) {
             return $invitation->getStatus() === InvitationStatusEnum::PENDING;
         });
+        $noteId = "0";
         $firstNote = $user->getNotes()->first();
-        $noteUrl = '/notes/' . $firstNote->getId();
+        if ($firstNote) {
+            $noteId = $firstNote->getId();
+        }
+        $noteUrl = '/notes/' . $noteId;
         return $this->render('user_invitation/index.html.twig', [
             'noteUrl' => $noteUrl,
             'user' => $user,
@@ -58,8 +62,12 @@ final class UserInvitationController extends AbstractController
     public function new(Security $security): Response
     {
         $user = $security->getUser();
+        $noteId = "0";
         $firstNote = $user->getNotes()->first();
-        $noteUrl = '/notes/' . $firstNote->getId();
+        if ($firstNote) {
+            $noteId = $firstNote->getId();
+        }
+        $noteUrl = '/notes/' . $noteId;
         return $this->render('user_invitation/new.html.twig', [
             'noteUrl' => $noteUrl,
             'user' => $user
@@ -76,8 +84,12 @@ final class UserInvitationController extends AbstractController
     public function edit(Security $security): Response
     {
         $user = $security->getUser();
+        $noteId = "0";
         $firstNote = $user->getNotes()->first();
-        $noteUrl = '/notes/' . $firstNote->getId();
+        if ($firstNote) {
+            $noteId = $firstNote->getId();
+        }
+        $noteUrl = '/notes/' . $noteId;
         return $this->render('user_invitation/edit.html.twig', [
             'noteUrl' => $noteUrl,
             'user' => $user
