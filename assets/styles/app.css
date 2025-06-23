@@ -330,7 +330,7 @@ a.active {
 }
 
 
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 768px) {
     .nav-left {
         display: none;
     }
@@ -342,5 +342,14 @@ a.active {
     }
     .bi-list {
         display: inline-block !important;
+    }
+    .last-edit{
+        font-size: 10px;
+    }
+    .note-title-header {
+        display: none;
+    }
+    .edit-icons{
+        opacity: 1;
     }
 }
