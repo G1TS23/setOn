@@ -55,8 +55,14 @@
             const aLink = document.getElementById(`link-${noteId}`);
             const hLink = document.querySelector('.note-title-header');
             if (aLink && field === 'title') {
-                aLink.innerText = value; // Mettre à jour le titre de la note
-                hLink.innerText = value; // Mettre à jour le titre dans l'en-tête
+                if (value.length === 0)
+                {
+                    aLink.innerText = 'Nouvelle note';
+                    hLink.innerText = 'Nouvelle note';
+                } else {
+                    hLink.innerText = value;
+                    aLink.innerText = value;
+                }
             }
             clearTimeout(saveTimeout);
 
