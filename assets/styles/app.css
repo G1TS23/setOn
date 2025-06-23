@@ -234,8 +234,25 @@ a.active {
 }
 
 .content {
-    white-space: pre-wrap; /* Permet d'afficher les retours à la ligne */
+    field-sizing: content;
+    white-space: pre-wrap;
+    min-height: 100%;
+    height: auto;
+    overflow: hidden;
+    position: relative;
 }
+
+.content.empty:not(.focused)::before {
+    content: attr(data-autoresize-placeholder-value);
+    color: #888;
+    position: absolute;
+    pointer-events: none;
+}
+
+.content.focused::before {
+    display: none;
+}
+
 
 .edit-icons {
     color: var(--nav-light-text-color);

@@ -15,14 +15,16 @@
                         onload="resize(this)"
                         oninput="delayedSave('title', this.value, {{ note.id }})">{{ note.title | capitalize }}</textarea>
 
-                <p contenteditable="true" class="content" name="content" id="note_{{ note.id }}"
-                   data-controller="textarea"
-                   data-action="input->textarea#input"
-                   onfocus="this.setSelectionRange(this.value.length, this.value.length)"
-                   onfocusout="this.placeholder = ''"
-                   onfocusin="this.placeholder = 'Écrivez...'"
+                <p contenteditable="true"
+                   class="content"
+                   name="content"
+                   id="note_{{ note.id }}"
+                   data-controller="autoresize"
+                   data-action="input->autoresize#input focusin->autoresize#handleFocusIn focusout->autoresize#handleFocusOut"
+                   data-autoresize-placeholder-value="Écrivez..."
+                   data-autoresize-is-empty="true"
                    oninput="delayedSave('content', this.innerText, {{ note.id }})"
-                   onload="resize(this)">{{ note.content }}</p>
+                >{{ note.content }}</p>
             </div>
         </div>
     </div>
@@ -51,8 +53,10 @@
 
         function delayedSave(field, value, noteId) {
             const aLink = document.getElementById(`link-${noteId}`);
+            const hLink = document.querySelector('.note-title-header');
             if (aLink && field === 'title') {
                 aLink.innerText = value; // Mettre à jour le titre de la note
+                hLink.innerText = value; // Mettre à jour le titre dans l'en-tête
             }
             clearTimeout(saveTimeout);
 
