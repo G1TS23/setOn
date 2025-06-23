@@ -113,6 +113,26 @@ textarea, input, p {
     z-index: 1000;
 }
 
+.show-nav-left {
+    display: block !important;
+}
+
+.nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.nav-overlay.show {
+    display: block;
+}
+
+
 .user-title {
     position: fixed;
     top: 0;
