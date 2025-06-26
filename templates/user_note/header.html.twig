@@ -6,6 +6,12 @@
         <span class="note-title-header">{{ (note.title | length == 0) ? 'Nouvelle note' : (note.title | length > 40) ? (note.title | slice(0, 40) ~ '...') : note.title }}</span>
     </div>
     <div class="d-flex align-items-baseline justify-content-end gap-1">
+        <span id="save-status-{{ note.id }}" class="ms-2 text-success" style="display:none;">
+            <i class="fa-solid fa-check"></i>
+        </span>
+        <span id="load-status-{{ note.id }}" class="ms-2" style="display:none;">
+            <i class="fa-solid fa-rotate"></i>
+        </span>
         <span class="last-edit">Dernière modification : {{ note.updatedAt |format_datetime('relative_medium', 'none', locale: 'fr') }}</span>
         <div class="dropdown">
             <button type="button" class="btn nav-light-text note-text-color" data-bs-toggle="dropdown"
