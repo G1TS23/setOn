@@ -64,7 +64,7 @@ a {
 textarea, input, p {
     width: 100%;
     margin: auto;
-    max-width: 600px;
+    max-width: 1000px;
     resize: none;
     border: none;
     user-focus: none;
@@ -76,10 +76,11 @@ textarea, input, p {
 }
 
 .note-title {
+    padding-inline: 2rem;
+    max-width: 700px;
     font-size: 3rem;
     margin: auto;
     width: 100%;
-    max-width: 600px;
     font-weight: 900;
     height: fit-content;
 }
@@ -237,6 +238,8 @@ a.active {
 }
 
 .content {
+    padding-inline: 2rem;
+    max-width: 700px;
     field-sizing: content;
     white-space: pre-wrap;
     min-height: 100%;
