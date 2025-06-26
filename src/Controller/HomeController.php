@@ -20,6 +20,28 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 final class HomeController extends AbstractController
 {
+
+    #[Route(['/'], name: 'app_landing')]
+    public function landing(): Response
+    {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_home');
+        }
+        return $this->render('home/landing.html.twig');
+    }
+
+    #[Route(['/privacy'], name: 'app_privacy')]
+    public function privacy(): Response
+    {
+        return $this->render('legal/privacy.html.twig');
+    }
+
+    #[Route(['/mentions'], name: 'app_mentions')]
+    public function mentions(): Response
+    {
+        return $this->render('legal/mentions.html.twig');
+    }
+
     /**
      * Renders the home page dashboard for authenticated users.
      *

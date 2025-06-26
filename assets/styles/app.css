@@ -16,6 +16,10 @@
     --resizer-active-color: light-dark(#D9D9D7, #2D2D2D);
 }
 
+.note-background-color {
+    background-color: var(--note-background-color) !important;
+}
+
 .note-text-color {
     color: var(--note-text-color) !important;
 }
@@ -50,7 +54,6 @@ ul {
 
 li {
     list-style: none;
-
 }
 
 a {
