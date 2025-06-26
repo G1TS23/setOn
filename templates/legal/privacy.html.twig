@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}setOn - Politique de confidentialité{% endblock %}
+
+{% block body %}
+    <div class="container min-vh-100 d-flex flex-column justify-content-between" style="padding-top: 76px;">
+        <header class="fixed-top note-background-color d-flex justify-content-between align-items-center py-3">
+            <h1 class="h3 mb-0 ms-3"><a href="{{ path('app_landing') }}" class="note-text-color">setOn</a></h1>
+            <div>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-dark me-2">Connexion</a>
+                <a href="{{ path('app_register') }}" class="btn btn-dark">Inscription</a>
+            </div>
+        </header>
+        <main class="py-5 w-75 mx-auto">
+            <h1>Politique de confidentialité</h1><br>
+
+            <span>Dernière mise à jour : 26 juin 2025</span><br><br>
+
+            <h2>1. Introduction</h2>
+            <span>Bienvenue sur notre site de partage de notes. La protection de vos données personnelles est une priorité. Cette
+        politique de confidentialité a pour but de vous informer de manière transparente sur les données que nous
+        collectons, leur usage, leur conservation et vos droits.</span><br><br>
+
+            <h2>2. Données collectées</h2>
+            <span>Lorsque vous créez un compte sur notre site, nous collectons les données suivantes :</span>
+            <ul>
+                <li>Nom ou pseudonyme (défini par vous-même)</li>
+                <li>Adresse email</li>
+                <li>Mot de passe (stocké sous forme hachée et non lisible)</li>
+                <li>Notes que vous enregistrez (stockées en clair)</li>
+            </ul>
+            <br>
+            <h2>3. Utilisation des données</h2>
+            <span>Les données collectées sont utilisées uniquement pour les finalités suivantes :</span><br>
+            <ul>
+                <li>Créer et gérer votre compte utilisateur</li>
+                <li>Vous permettre d’accéder et de modifier vos notes</li>
+                <li>Vous contacter en cas de besoin (fonctionnalité ou sécurité)</li>
+                <li>Garantir le bon fonctionnement du service</li>
+                <li>Ces données ne sont jamais vendues ni partagées à des tiers.</li>
+            </ul>
+            <br>
+
+            <h2>4. Sécurité</h2>
+            <span>Nous mettons en œuvre des mesures raisonnables pour assurer la sécurité de vos données :</span><br>
+            <ul>
+                <li>Le mot de passe est stocké sous forme hachée (non réversible)</li>
+                <li>L’accès aux données est limité à l’administrateur du site</li>
+                <li>Aucune donnée n’est transmise à des services tiers à des fins publicitaires ou commerciales</li>
+            </ul>
+            <br>
+            <h2>5. Vos droits</h2>
+            <span>Conformément au RGPD, vous disposez des droits suivants sur vos données personnelles :</span><br>
+            <ul>
+                <li>Droit d’accès : vous pouvez demander à consulter les données que nous détenons à votre sujet</li>
+                <li>Droit de rectification : vous pouvez demander la correction d’informations inexactes</li>
+                <li>Droit à l’effacement : vous pouvez demander la suppression de votre compte et de toutes vos
+                    données
+                </li>
+                <li>Droit à la portabilité : vous pouvez demander un export de vos données dans un format lisible</li>
+            </ul>
+            <span>Pour exercer l’un de ces droits, vous pouvez contacter l’administrateur du site à l’adresse suivante :</span><br>
+            <span>Olivier Falahi<br>
+        <a href="mailto:olivier.falahi@efrei.net"><u>olivier.falahi@efrei.net</u></a></span><br><br>
+
+            <h2>6. Conservation des données</h2>
+            <span>Les données sont conservées tant que votre compte est actif. Vous pouvez demander à tout moment leur
+        suppression.</span><br><br>
+
+            <h2>7. Modifications</h2>
+            <span>Cette politique de confidentialité peut être mise à jour à tout moment. En cas de changement significatif, vous
+        en serez informé par email.</span>
+        </main>
+    </div>
+    <style>
+        ul {
+            list-style-type: circle;
+            padding-left: 2rem;
+        }
+
+        li {
+
+            list-style-type: disc;
+        }
+    </style>
+{% endblock %}
