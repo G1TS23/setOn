@@ -13,25 +13,14 @@ class JwtProvider implements TokenProviderInterface
      * @var string
      */
     private string $secret;
+    private string $mercureHubUrl = 'https://localhost/.well-known/mercure';
 
     public function __construct(string $secret){
         $this->secret = $secret;
     }
 
     public function __invoke(): string{
-
-        $configuration = Configuration::forSymmetricSigner(
-            new Sha256(),
-            InMemory::plainText($this->secret)
-        );
-
-        $token = $configuration->builder()
-            ->issuedBy('https://localhost/.well-known/mercure') // URL du hub Mercure
-            ->permittedFor('https://localhost/.well-known/mercure')
-            ->withClaim('mercure', ['publish' => ['*']])
-            ->getToken($configuration->signer(), $configuration->signingKey());
-
-        return $token->toString();
+        return $this->getJwt();
     }
 
     public function getJwt(): string
@@ -42,8 +31,8 @@ class JwtProvider implements TokenProviderInterface
         );
 
         $token = $configuration->builder()
-            ->issuedBy('https://localhost/.well-known/mercure') // URL du hub Mercure
-            ->permittedFor('https://localhost/.well-known/mercure')
+            ->issuedBy($this->mercureHubUrl) // URL du hub Mercure
+            ->permittedFor($this->mercureHubUrl)
             ->withClaim('mercure', ['publish' => ['*']])
             ->getToken($configuration->signer(), $configuration->signingKey());
 
