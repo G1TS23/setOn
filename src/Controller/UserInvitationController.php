@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 /**
  * Controller for managing user invitations.
  *
- * This controller handles all invitation-related operations for regular users including:
+ * This controller handles all invitation-related operations for regular users including
  * - Viewing invitations
  * - Creating new invitations
  * - Accepting/declining invitations
@@ -24,6 +24,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/invitation')]
 final class UserInvitationController extends AbstractController
 {
+    private string $noteUrlPrefix = "/notes/";
+    private string $somethingWentWrongMessage = 'Something went wrong';
     /**
      * Displays all invitations for the current user.
      *
@@ -44,7 +46,7 @@ final class UserInvitationController extends AbstractController
         if ($firstNote) {
             $noteId = $firstNote->getId();
         }
-        $noteUrl = '/notes/' . $noteId;
+        $noteUrl = $this->noteUrlPrefix . $noteId;
         return $this->render('user_invitation/index.html.twig', [
             'noteUrl' => $noteUrl,
             'user' => $user,
@@ -67,7 +69,7 @@ final class UserInvitationController extends AbstractController
         if ($firstNote) {
             $noteId = $firstNote->getId();
         }
-        $noteUrl = '/notes/' . $noteId;
+        $noteUrl = $this->noteUrlPrefix . $noteId;
         return $this->render('user_invitation/new.html.twig', [
             'noteUrl' => $noteUrl,
             'user' => $user
@@ -89,7 +91,7 @@ final class UserInvitationController extends AbstractController
         if ($firstNote) {
             $noteId = $firstNote->getId();
         }
-        $noteUrl = '/notes/' . $noteId;
+        $noteUrl = $this->noteUrlPrefix . $noteId;
         return $this->render('user_invitation/edit.html.twig', [
             'noteUrl' => $noteUrl,
             'user' => $user
@@ -117,11 +119,11 @@ final class UserInvitationController extends AbstractController
     {
         $user = $security->getUser();
         if ($invitation->getReceiver() !== $user) {
-            throw $this->createAccessDeniedException('Something went wrong');
+            throw $this->createAccessDeniedException($this->somethingWentWrongMessage);
         }
         $note = $invitation->getNote();
         if (!$note) {
-            throw $this->createNotFoundException('Something went wrong');
+            throw $this->createNotFoundException($this->somethingWentWrongMessage);
         }
         $note->addEditor($invitation->getReceiver());
         $invitation->setStatus(InvitationStatusEnum::APPROVED);
@@ -150,7 +152,7 @@ final class UserInvitationController extends AbstractController
     {
         $user = $security->getUser();
         if ($invitation->getReceiver() !== $user) {
-            throw $this->createAccessDeniedException('Something went wrong');
+            throw $this->createAccessDeniedException($this->somethingWentWrongMessage);
         }
         $invitation->setStatus(InvitationStatusEnum::REJECTED);
         $entityManager->persist($invitation);

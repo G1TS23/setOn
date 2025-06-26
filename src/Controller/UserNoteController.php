@@ -31,6 +31,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/note')]
 final class UserNoteController extends AbstractController
 {
+    private string $noteUrlPrefix = "/notes/";
     /**
      * Displays a specific note.
      *
@@ -43,8 +44,8 @@ final class UserNoteController extends AbstractController
     #[Route('/{id<\d+>}', name: 'user_note', methods: ['GET'])]
     public function show(Note $note, Security $security): Response
     {
-        $noteUrl = '/notes/' . $note->getId();
-        $userNotesUrl = '/user/' . $note->getOwner()->getId() . '/notes/';
+        $noteUrl = $this->noteUrlPrefix . $note->getId();
+        $userNotesUrl = '/user/' . $note->getOwner()->getId() . $this->noteUrlPrefix;
         $user = $security->getUser();
         $pendingRequests = $user->getRequests()->filter(function (Invitation $invitation) {
             return $invitation->getStatus() === InvitationStatusEnum::PENDING;
@@ -180,8 +181,8 @@ final class UserNoteController extends AbstractController
 
             $entityManager->flush();
 
-            $noteUrl = '/notes/' . $note->getId();
-            $userNotesUrl = '/user/' . $note->getOwner()->getId() . '/notes/';
+            $noteUrl = $this->noteUrlPrefix . $note->getId();
+            $userNotesUrl = '/user/' . $note->getOwner()->getId() . $this->noteUrlPrefix;
 
             $updateNote = new Update($noteUrl, json_encode([
                 'id' => $note->getId(),

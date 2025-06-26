@@ -3,7 +3,7 @@
          role="button"
          data-controller="burger">
         <i class="bi bi-list d-none"></i>
-        <span>{{ note.title }}</span>
+        <span class="note-title-header">{{ (note.title | length == 0) ? 'Nouvelle note' : (note.title | length > 40) ? (note.title | slice(0, 40) ~ '...') : note.title }}</span>
     </div>
     <div class="d-flex align-items-baseline justify-content-end gap-1">
         <span class="last-edit">Dernière modification : {{ note.updatedAt |format_datetime('relative_medium', 'none', locale: 'fr') }}</span>
@@ -17,7 +17,7 @@
                 <div class="mb-3">
                     <label for="message" class="note-text-color form-label">Message</label>
                     <input contenteditable="true" class="form-control" name="message" id="message"
-                           placeholder="Ecrivez un message personnalisé"></input>
+                           placeholder="Ecrivez un message personnalisé">
                 </div>
                 <div class="mb-3">
                     <label for="userEmail" class="note-text-color form-label">Adresse Email</label>
