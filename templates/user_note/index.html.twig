@@ -3,7 +3,7 @@
 {% block note %}
     <div class="main d-flex flex-1 flex-column align-items-start justify-content-center">
         {% include "./user_note/header.html.twig" with {'note': note} %}
-        <div class="note">
+        <div class="note w-100">
             <div class="d-flex flex-column">
                 <textarea
                         class="note-title"
@@ -51,6 +51,15 @@
         let saveTimeout;
 
         function delayedSave(field, value, noteId) {
+
+            console.log(field, value, noteId);
+
+            const saveStatus = document.getElementById(`save-status-${noteId}`);
+            const loadStatus = document.getElementById(`load-status-${noteId}`);
+            if (loadStatus) {
+                loadStatus.style.display = 'inline';
+            }
+
             const aLink = document.getElementById(`link-${noteId}`);
             const hLink = document.querySelector('.note-title-header');
             if (aLink && field === 'title') {
@@ -81,6 +90,14 @@
                 }).then(response => {
                     if (!response.ok) {
                         console.error('Erreur lors de la sauvegarde automatique');
+                    } else {
+                        if (saveStatus) {
+                            loadStatus.style.display = 'none';
+                            saveStatus.style.display = 'inline';
+                            setTimeout(() => {
+                                saveStatus.style.display = 'none';
+                            }, 2000);
+                        }
                     }
                 }).catch(error => console.error('Erreur réseau :', error));
             }, 2000);
