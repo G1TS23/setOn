@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}setOn{% endblock %}
+
+{% block body %}
+    <div class="container min-vh-100 d-flex flex-column justify-content-between" style="padding-top: 76px;">
+        <header class="fixed-top note-background-color d-flex justify-content-between align-items-center py-3">
+            <h1 class="h3 mb-0 ms-3">setOn</h1>
+            <div>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-dark me-2">Connexion</a>
+                <a href="{{ path('app_register') }}" class="btn btn-dark me-3">Inscription</a>
+            </div>
+        </header>
+        <main class="flex-grow-1 d-flex flex-column align-items-center text-center h-100 py-5">
+            <h1>Bienvenue sur setOn&nbsp;!</h1>
+            <p>
+                Organisez vos notes, restez productif et accédez à vos informations partout.<br>
+                Créez un compte ou connectez-vous pour commencer à utiliser l’application.
+            </p>
+        </main>
+        <footer class="py-3 border-top text-center">
+            <a href="{{ path('app_privacy') }}" class="text-decoration-none me-3"><u>Politique de confidentialité</u>
+            </a><a href="{{ path('app_mentions') }}" class="text-decoration-none"><u>Mentions légales</u></a>
+        </footer>
+    </div>
+{% endblock %}

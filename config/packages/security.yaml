@@ -36,13 +36,16 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/, roles: PUBLIC_ACCESS }
+        - { path: ^/privacy, roles: PUBLIC_ACCESS }
+        - { path: ^/mentions, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/home, roles: ROLE_USER }
         - { path: ^/note, roles: ROLE_USER }
         - { path: ^/invitation, roles: ROLE_USER }
-        - { path: ^/, roles: ROLE_USER }
+
 
 when@test:
     security:

@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}setOn - Politique de confidentialité{% endblock %}
+
+{% block body %}
+    <div class="container min-vh-100 d-flex flex-column justify-content-between" style="padding-top: 76px;">
+        <header class="fixed-top note-background-color d-flex justify-content-between align-items-center py-3">
+            <h1 class="h3 mb-0 ms-3"><a href="{{ path('app_landing') }}" class="note-text-color">setOn</a></h1>
+            <div>
+                <a href="{{ path('app_login') }}" class="btn btn-outline-dark me-2">Connexion</a>
+                <a href="{{ path('app_register') }}" class="btn btn-dark">Inscription</a>
+            </div>
+        </header>
+        <main class="py-5 w-75 mx-auto">
+
+            <h1>Mentions légales</h1><br>
+
+            <h2>Éditeur du site</h2>
+            <ul>
+                <li>Nom du site : setOn</li>
+                <li>Responsable de la publication : Olivier Falahi</li>
+                <li>Contact : <a href="mailto:olivier.falahi@efrei.net"><u>olivier.falahi@efrei.net</u></a></li>
+                <li>Statut : Site personnel – non commercial</li>
+            </ul>
+            <br>
+
+            <h2>Hébergeur</h2>
+            <ul>
+                <li>Nom de l’hébergeur : o2switch</li>
+                <li>Adresse de l’hébergeur : Chem. des Pardiaux, 63000 Clermont-Ferrand</li>
+                <li>Téléphone de l’hébergeur : 04 44 44 60 40</li>
+            </ul>
+            <br>
+
+            <h2>Propriété intellectuelle</h2>
+            <span>L’ensemble des contenus (textes, code, interface, etc.) présents sur le site sont la propriété exclusive de leur
+        auteur, sauf mention contraire. Toute reproduction ou représentation, totale ou partielle, sans autorisation est
+        interdite.<br><br>
+
+        Les notes publiées par les utilisateurs restent leur propriété. En les publiant, les utilisateurs s’engagent à
+        ne pas violer de droits d’auteur ou de lois en vigueur.<br><br>
+        </span>
+
+            <h2>Données personnelles</h2>
+            <span>Les données collectées (nom/pseudo, email, mot de passe haché, notes) sont utilisées uniquement pour assurer le
+        fonctionnement du service. Aucune donnée n’est vendue ni transmise à des tiers.<br><br>
+
+        Pour toute demande d’accès, de modification ou de suppression de vos données, vous pouvez contacter :<br>
+                Olivier Falahi – <a href="mailto:olivier.falahi@efrei.net"><u>olivier.falahi@efrei.net</u></a><br><br>
+
+                Voir aussi notre <a href="{{ path('app_privacy') }}"target="_blank"><u>Politique de confidentialité</u></a> pour plus de détails.<br><br>
+        </span>
+            <h2>Responsabilité</h2>
+            <span>L’éditeur ne peut être tenu responsable du contenu publié par les utilisateurs. En cas de contenu illicite,
+            merci de le signaler par email à l’adresse ci-dessus, pour suppression rapide.</span><br><br>
+        </main>
+    </div>
+    <style>
+        ul {
+            list-style-type: circle;
+            padding-left: 2rem;
+        }
+
+        li {
+
+            list-style-type: disc;
+        }
+    </style>
+{% endblock %}
