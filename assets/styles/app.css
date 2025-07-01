@@ -376,3 +376,10 @@ a.active {
         opacity: 1;
     }
 }
+
+@media print {
+    /* All your print styles go here */
+    .nav-left {
+        display: none !important;
+    }
+}
