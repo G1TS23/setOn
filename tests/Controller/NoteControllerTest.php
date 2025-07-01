@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Note;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -13,7 +14,8 @@ final class NoteControllerTest extends WebTestCase
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $noteRepository;
-    private string $path = '/note/';
+    private string $path = '/admin/note/';
+    private User $user;
 
     protected function setUp(): void
     {
@@ -25,7 +27,24 @@ final class NoteControllerTest extends WebTestCase
             $this->manager->remove($object);
         }
 
+        $existingUser = $this->manager->getRepository(User::class)->findOneByEmail('test@example.com');
+        if($existingUser) {
+            $this->manager->remove($existingUser);;
+            $this->manager->flush();
+        }
+        // Créer ou récupérer un utilisateur (mock ou fixture)
+
+        $this->user = new User();
+        $this->user->setEmail('test@example.com');
+        $this->user->setPassword('dummy'); // le mot de passe est ignoré ici
+        $this->user->setName('Test User');
+        $this->user->setRoles(['ROLE_ADMIN']);
+
+        $this->manager->persist($this->user);
+
         $this->manager->flush();
+        $this->client->loginUser($this->user);
+
     }
 
     public function testIndex(): void
@@ -42,7 +61,7 @@ final class NoteControllerTest extends WebTestCase
 
     public function testNew(): void
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
         $this->client->request('GET', sprintf('%snew', $this->path));
 
         self::assertResponseStatusCodeSame(200);
@@ -50,27 +69,23 @@ final class NoteControllerTest extends WebTestCase
         $this->client->submitForm('Save', [
             'note[title]' => 'Testing',
             'note[content]' => 'Testing',
-            'note[createdAt]' => 'Testing',
-            'note[updatedAt]' => 'Testing',
-            'note[owner]' => 'Testing',
-            'note[editors]' => 'Testing',
+            'note[owner]' => $this->user->getId(),
         ]);
 
-        self::assertResponseRedirects($this->path);
+        self::assertResponseRedirects('/admin/note');
 
         self::assertSame(1, $this->noteRepository->count([]));
     }
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
         $fixture = new Note();
         $fixture->setTitle('My Title');
         $fixture->setContent('My Title');
-        $fixture->setCreatedAt('My Title');
-        $fixture->setUpdatedAt('My Title');
-        $fixture->setOwner('My Title');
-        $fixture->setEditors('My Title');
+        $fixture->setCreatedAt(new \DateTimeImmutable());
+        $fixture->setUpdatedAt(new \DateTimeImmutable());
+        $fixture->setOwner($this->user);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -85,51 +100,47 @@ final class NoteControllerTest extends WebTestCase
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
         $fixture = new Note();
         $fixture->setTitle('Value');
         $fixture->setContent('Value');
-        $fixture->setCreatedAt('Value');
-        $fixture->setUpdatedAt('Value');
-        $fixture->setOwner('Value');
-        $fixture->setEditors('Value');
+        $createDate = new \DateTimeImmutable();
+        $fixture->setCreatedAt($createDate);
+        $fixture->setUpdatedAt(new \DateTimeImmutable());
+        $fixture->setOwner($this->user);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
 
         $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
 
+
         $this->client->submitForm('Update', [
             'note[title]' => 'Something New',
             'note[content]' => 'Something New',
-            'note[createdAt]' => 'Something New',
-            'note[updatedAt]' => 'Something New',
-            'note[owner]' => 'Something New',
-            'note[editors]' => 'Something New',
         ]);
 
-        self::assertResponseRedirects('/note/');
+        self::assertResponseRedirects('/admin/note');
 
         $fixture = $this->noteRepository->findAll();
 
         self::assertSame('Something New', $fixture[0]->getTitle());
         self::assertSame('Something New', $fixture[0]->getContent());
-        self::assertSame('Something New', $fixture[0]->getCreatedAt());
-        self::assertSame('Something New', $fixture[0]->getUpdatedAt());
-        self::assertSame('Something New', $fixture[0]->getOwner());
-        self::assertSame('Something New', $fixture[0]->getEditors());
+        self::assertEquals(
+            $createDate->format('Y-m-d H:i:s'),
+            $fixture[0]->getCreatedAt()->format('Y-m-d H:i:s'));
+        self::assertSame($this->user->getId(), $fixture[0]->getOwner()->getId());
     }
 
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
         $fixture = new Note();
         $fixture->setTitle('Value');
         $fixture->setContent('Value');
-        $fixture->setCreatedAt('Value');
-        $fixture->setUpdatedAt('Value');
-        $fixture->setOwner('Value');
-        $fixture->setEditors('Value');
+        $fixture->setCreatedAt(new \DateTimeImmutable());
+        $fixture->setUpdatedAt(new \DateTimeImmutable());
+        $fixture->setOwner($this->user);
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -137,7 +148,7 @@ final class NoteControllerTest extends WebTestCase
         $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
         $this->client->submitForm('Delete');
 
-        self::assertResponseRedirects('/note/');
+        self::assertResponseRedirects('/admin/note');
         self::assertSame(0, $this->noteRepository->count([]));
     }
 }
