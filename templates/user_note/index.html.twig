@@ -56,8 +56,13 @@
 
             const saveStatus = document.getElementById(`save-status-${noteId}`);
             const loadStatus = document.getElementById(`load-status-${noteId}`);
+            const errorStatus = document.getElementById(`error-status-${noteId}`);
+
             if (loadStatus) {
                 loadStatus.style.display = 'inline';
+            }
+            if (errorStatus) {
+                errorStatus.style.display = 'none';
             }
 
             const aLink = document.getElementById(`link-${noteId}`);
@@ -89,6 +94,8 @@
                     body: JSON.stringify({field, value}),
                 }).then(response => {
                     if (!response.ok) {
+                        errorStatus.style.display = 'inline';
+                        loadStatus.style.display = 'none';
                         console.error('Erreur lors de la sauvegarde automatique');
                     } else {
                         if (saveStatus) {
